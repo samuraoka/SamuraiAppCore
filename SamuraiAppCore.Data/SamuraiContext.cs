@@ -21,6 +21,9 @@ namespace SamuraiAppCore.Data
     /// 
     /// To Create or Update database, run following command in the Package Manager Console
     /// PM> Update-Database -Context SamuraiContext -Project SamuraiAppCore.Data -StartupProject SamuraiAppCore.CoreUI
+    /// 
+    /// To generate a SQL script from migrations. Run following command in the Package Manager Console
+    /// PM> Script-Migration -Idempotent -Context SamuraiContext -Project SamuraiAppCore.Data -StartupProject SamuraiAppCore.CoreUI
     /// </summary>
     public class SamuraiContext : DbContext
     {
