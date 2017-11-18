@@ -7,14 +7,18 @@ namespace SamuraiAppCore.Data
     /// To create a data model, add following NuGet package using the below command in Package Manager
     /// PM> Install-Package Microsoft.EntityFrameworkCore.SqlServer -ProjectName SamuraiAppCore.Data -Version 2.0.0
     /// https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.SqlServer/
+    /// 
     /// To create migration files, add following NuGet package using the below command in Package Manager
     /// PM> Install-Package Microsoft.EntityFrameworkCore.Tools -ProjectName SamuraiAppCore.Data -Version 2.0.0
     /// PM> Install-Package Microsoft.EntityFrameworkCore.Design -ProjectName SamuraiAppCore.CoreUI -Version 2.0.0
     /// https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Tools/
+    /// 
     /// To get help messages, use a following command in Package Manager.
     /// PM> get-help entityframeworkcore
+    /// 
     /// To add a new migration, execute a following command
     /// PM> Add-Migration -Name init -Context SamuraiContext -Project SamuraiAppCore.Data -StartupProject SamuraiAppCore.CoreUI
+    /// 
     /// To Create or Update database, run following command in the Package Manager Console
     /// PM> Update-Database -Context SamuraiContext -Project SamuraiAppCore.Data -StartupProject SamuraiAppCore.CoreUI
     /// </summary>
@@ -36,6 +40,16 @@ namespace SamuraiAppCore.Data
         {
             var connectionString = @"Server=(LocalDB)\MSSQLLocalDB;Integrated Security=true;Database=SamuraiDataCore;AttachDbFileName=E:\sato\MSSQLLocalDB\SamuraiDataCore.mdf";
             optionsBuilder.UseSqlServer(connectionString);
+        }
+
+        /// <summary>
+        /// Keys (primary)
+        /// https://docs.microsoft.com/en-us/ef/core/modeling/keys
+        /// </summary>
+        /// <param name="modelBuilder"></param>
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<SamuraiBattle>().HasKey(sb => new { sb.SamuraiId, sb.BattleId });
         }
     }
 }
