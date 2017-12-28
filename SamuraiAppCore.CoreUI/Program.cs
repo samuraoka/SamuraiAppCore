@@ -18,7 +18,35 @@ namespace SamuraiAppCore.CoreUI
                 //SimpleSamuraiQuery();
                 //MoreQueries();
                 //MoreQueriesFirst();
-                MoreQueriesById();
+                //MoreQueriesById();
+                //RetrieveAndUpdateSamurai();
+                //RetrieveAndUpdateMultipleSamurais();
+                MultipleOperations();
+            }
+        }
+
+        private static void MultipleOperations()
+        {
+            var samurai = _context.Samurais.FirstOrDefault();
+            samurai.Name += "San";
+            _context.Samurais.Add(new Samurai { Name = "Kikuchiyo" });
+            _context.SaveChanges();
+        }
+
+        private static void RetrieveAndUpdateMultipleSamurais()
+        {
+            var samurais = _context.Samurais.ToList();
+            samurais.ForEach(s => s.Name += "San");
+            _context.SaveChanges();
+        }
+
+        private static void RetrieveAndUpdateSamurai()
+        {
+            var samurai = _context.Samurais.FirstOrDefault();
+            if (samurai != null)
+            {
+                samurai.Name += "San";
+                _context.SaveChanges();
             }
         }
 
@@ -33,7 +61,7 @@ namespace SamuraiAppCore.CoreUI
 
         private static void MoreQueriesFirst()
         {
-            var names = new [] { "Sampson", "Cheese" };
+            var names = new[] { "Sampson", "Cheese" };
             foreach (var name in names)
             {
                 try
