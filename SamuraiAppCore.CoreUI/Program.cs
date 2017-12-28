@@ -21,7 +21,34 @@ namespace SamuraiAppCore.CoreUI
                 //MoreQueriesById();
                 //RetrieveAndUpdateSamurai();
                 //RetrieveAndUpdateMultipleSamurais();
-                MultipleOperations();
+                //MultipleOperations();
+                //QueryAndUpdateSamuraiDisconnected();
+                QueryAndUpdateDisconnectedBattle();
+            }
+        }
+
+        private static void QueryAndUpdateDisconnectedBattle()
+        {
+            var battle = _context.Battles.FirstOrDefault();
+            battle.EndDate = new DateTime(1754, 12, 31);
+            using (var contextNewAppInstance = new SamuraiContext())
+            {
+                contextNewAppInstance.Battles.Update(battle);
+                contextNewAppInstance.SaveChanges();
+            }
+        }
+
+        private static void QueryAndUpdateSamuraiDisconnected()
+        {
+            var samurai = _context.Samurais.FirstOrDefault(s => s.Name == "Kikuchiyo");
+            if (samurai != null)
+            {
+                samurai.Name += "San";
+                using (var contextNewAppInstance = new SamuraiContext())
+                {
+                    contextNewAppInstance.Samurais.Update(samurai);
+                    contextNewAppInstance.SaveChanges();
+                }
             }
         }
 
