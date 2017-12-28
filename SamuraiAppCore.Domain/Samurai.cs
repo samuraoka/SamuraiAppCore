@@ -14,5 +14,10 @@ namespace SamuraiAppCore.Domain
         public List<Quote> Quotes { get; set; }
         public List<SamuraiBattle> SamuraiBattles { get; set; }
         public SecretIdentity SecretIdentity { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format($"Id: {Id}, Name: {Name}");
+        }
     }
 }

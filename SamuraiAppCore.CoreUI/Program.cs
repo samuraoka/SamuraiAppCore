@@ -1,4 +1,6 @@
-﻿using SamuraiAppCore.Data;
+﻿using System;
+using System.Linq;
+using SamuraiAppCore.Data;
 using SamuraiAppCore.Domain;
 
 namespace SamuraiAppCore.CoreUI
@@ -9,6 +11,19 @@ namespace SamuraiAppCore.CoreUI
         {
             InsertSamurai();
             InsertMultipleSamurais();
+            SimpleSamuraiQuery();
+        }
+
+        private static void SimpleSamuraiQuery()
+        {
+            using (var context = new SamuraiContext())
+            {
+                var samurais = context.Samurais.Where(s => s.Name == "Sampson").ToList();
+                samurais.ForEach(samurai => Console.WriteLine(samurai));
+
+                var julies = context.Samurais.Where(s => s.Name == "Julie").ToList();
+                julies.ForEach(julie => Console.WriteLine(julie));
+            }
         }
 
         private static void InsertMultipleSamurais()
