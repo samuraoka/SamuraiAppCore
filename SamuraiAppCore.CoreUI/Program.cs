@@ -28,8 +28,32 @@ namespace SamuraiAppCore.CoreUI
                 //AddSomeMoreSamurais();
                 //DeleteWhileTracked();
                 //DeleteMany();
-                DeleteWhileNotTracked();
+                //DeleteWhileNotTracked();
+                //RawSqlQuery();
+                RawSqlQueryStoredProcedure();
             }
+        }
+
+        private static void RawSqlQueryStoredProcedure()
+        {
+            var namePart = "San";
+            var samurais = _context.Samurais
+                .FromSql($"EXEC FilterSamuraiByNamePart {namePart}")
+                .OrderByDescending(s => s.Name).ToList();
+
+            Console.WriteLine("========================================");
+            samurais.ForEach(s => Console.WriteLine(s));
+            Console.WriteLine("========================================");
+        }
+
+        private static void RawSqlQuery()
+        {
+            var samurais = _context.Samurais.FromSql("Select * From Samurais")
+                .Where(s => s.Name.Contains("San"))
+                .OrderByDescending(s => s.Name).ToList();
+            Console.WriteLine("========================================");
+            samurais.ForEach(s => Console.WriteLine(s));
+            Console.WriteLine("========================================");
         }
 
         private static void DeleteWhileNotTracked()

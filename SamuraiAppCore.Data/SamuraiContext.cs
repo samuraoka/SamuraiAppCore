@@ -26,6 +26,9 @@ namespace SamuraiAppCore.Data
     /// 
     /// To generate a SQL script from migrations. Run following command in the Package Manager Console
     /// PM> Script-Migration -Idempotent -Context SamuraiContext -Project SamuraiAppCore.Data -StartupProject SamuraiAppCore.CoreUI
+    /// 
+    /// To add a new migration, execute a following command
+    /// PM> Add-Migration -Name AddSprocs -Context SamuraiContext -Project SamuraiAppCore.Data -StartupProject SamuraiAppCore.CoreUI
     /// </summary>
     public class SamuraiContext : DbContext
     {
