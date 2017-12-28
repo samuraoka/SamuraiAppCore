@@ -7,44 +7,73 @@ namespace SamuraiAppCore.CoreUI
 {
     class Program
     {
+        private static SamuraiContext _context;
+
         static void Main(string[] args)
         {
-            InsertSamurai();
-            InsertMultipleSamurais();
-            SimpleSamuraiQuery();
+            using (_context = new SamuraiContext())
+            {
+                //InsertSamurai(); // Uncomment this line if you want to insert a data.
+                //InsertMultipleSamurais(); // Uncomment this line if you want to insert some data.
+                //SimpleSamuraiQuery();
+                //MoreQueries();
+                //MoreQueriesFirst();
+                MoreQueriesById();
+            }
+        }
+
+        private static void MoreQueriesById()
+        {
+            var samurai = _context.Samurais.Find(60);
+            if (samurai != null)
+            {
+                Console.WriteLine(samurai);
+            }
+        }
+
+        private static void MoreQueriesFirst()
+        {
+            var names = new [] { "Sampson", "Cheese" };
+            foreach (var name in names)
+            {
+                try
+                {
+                    var samurai = _context.Samurais.First(s => s.Name == name);
+                    Console.WriteLine(samurai);
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine($"There is no such Samurai named \"{name}\".");
+                }
+            }
+        }
+
+        private static void MoreQueries()
+        {
+            var name = "Sampson";
+            var samurais = _context.Samurais.Where(s => s.Name == name).ToList();
+            samurais.ForEach(samurai => Console.WriteLine(samurai));
         }
 
         private static void SimpleSamuraiQuery()
         {
-            using (var context = new SamuraiContext())
-            {
-                var samurais = context.Samurais.Where(s => s.Name == "Sampson").ToList();
-                samurais.ForEach(samurai => Console.WriteLine(samurai));
-
-                var julies = context.Samurais.Where(s => s.Name == "Julie").ToList();
-                julies.ForEach(julie => Console.WriteLine(julie));
-            }
+            var samurais = _context.Samurais.ToList();
+            samurais.ForEach(samurai => Console.WriteLine(samurai));
         }
 
         private static void InsertMultipleSamurais()
         {
             var samurai = new Samurai { Name = "Julie" };
             var samuraiSammy = new Samurai { Name = "Sampson" };
-            using (var context = new SamuraiContext())
-            {
-                context.Samurais.AddRange(samurai, samuraiSammy);
-                context.SaveChanges();
-            }
+            _context.Samurais.AddRange(samurai, samuraiSammy);
+            _context.SaveChanges();
         }
 
         private static void InsertSamurai()
         {
             var samurai = new Samurai { Name = "Julie" };
-            using (var context = new SamuraiContext())
-            {
-                context.Samurais.Add(samurai);
-                context.SaveChanges();
-            }
+            _context.Samurais.Add(samurai);
+            _context.SaveChanges();
         }
     }
 }
