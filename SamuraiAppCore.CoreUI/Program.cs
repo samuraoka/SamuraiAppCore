@@ -1,7 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
 using SamuraiAppCore.Data;
 using SamuraiAppCore.Domain;
+using System;
+using System.Linq;
 
 namespace SamuraiAppCore.CoreUI
 {
@@ -23,8 +24,56 @@ namespace SamuraiAppCore.CoreUI
                 //RetrieveAndUpdateMultipleSamurais();
                 //MultipleOperations();
                 //QueryAndUpdateSamuraiDisconnected();
-                QueryAndUpdateDisconnectedBattle();
+                //QueryAndUpdateDisconnectedBattle();
+                //AddSomeMoreSamurais();
+                //DeleteWhileTracked();
+                //DeleteMany();
+                DeleteWhileNotTracked();
             }
+        }
+
+        private static void DeleteWhileNotTracked()
+        {
+            var samurai = _context.Samurais.FirstOrDefault(s => s.Name == "Heihachi Hayashida");
+            if (samurai != null)
+            {
+                using (var contextNewAppInstance = new SamuraiContext())
+                {
+                    contextNewAppInstance.Samurais.Remove(samurai);
+                    contextNewAppInstance.SaveChanges();
+                }
+            }
+        }
+
+        private static void DeleteMany()
+        {
+            var samurais = _context.Samurais.Where(s => s.Name.Contains("oh"));
+            _context.Samurais.RemoveRange(samurais);
+            _context.SaveChanges();
+        }
+
+        private static void DeleteWhileTracked()
+        {
+            var samurai = _context.Samurais.FirstOrDefault(s => s.Name == "Shichirohji");
+            if (samurai != null)
+            {
+                //_context.Samurais.Remove(samurai);
+                _context.Entry(samurai).State = EntityState.Deleted;
+            }
+            _context.SaveChanges();
+        }
+
+        private static void AddSomeMoreSamurais()
+        {
+            _context.AddRange(
+                new Samurai { Name = "Kambei Shimada" },
+                new Samurai { Name = "Shichirohji" },
+                new Samurai { Name = "Katsushiroh Okamoto" },
+                new Samurai { Name = "Heihachi Hayashida" },
+                new Samurai { Name = "Kyuhzoh" },
+                new Samurai { Name = "Grohbei Katayama" }
+            );
+            _context.SaveChanges();
         }
 
         private static void QueryAndUpdateDisconnectedBattle()
