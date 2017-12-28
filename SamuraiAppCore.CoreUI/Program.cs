@@ -2,6 +2,8 @@
 using SamuraiAppCore.Data;
 using SamuraiAppCore.Domain;
 using System;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 
 namespace SamuraiAppCore.CoreUI
@@ -30,8 +32,52 @@ namespace SamuraiAppCore.CoreUI
                 //DeleteMany();
                 //DeleteWhileNotTracked();
                 //RawSqlQuery();
-                RawSqlQueryStoredProcedure();
+                //RawSqlQueryStoredProcedure();
+                //QueryWithNonSql();
+                //RawSqlCommand();
+                RawSqlCommandWithOutput();
             }
+        }
+
+        private static void RawSqlCommandWithOutput()
+        {
+            var procResult = new SqlParameter
+            {
+                ParameterName = "@procResult",
+                SqlDbType = SqlDbType.VarChar,
+                Direction = ParameterDirection.Output,
+                Size = 50
+            };
+            _context.Database.ExecuteSqlCommand(
+                "EXEC FindLongestName @procResult OUT", procResult);
+            Console.WriteLine("========================================");
+            Console.WriteLine($"Longest name: {procResult.Value}");
+            Console.WriteLine("========================================");
+        }
+
+        private static void RawSqlCommand()
+        {
+            var affected = _context.Database.ExecuteSqlCommand(
+                "update samurais set Name = REPLACE(Name, 'San', 'Nan')");
+            Console.WriteLine("========================================");
+            Console.WriteLine($"Affected rows: {affected}");
+            Console.WriteLine("========================================");
+        }
+
+        private static void QueryWithNonSql()
+        {
+            var samurais = _context.Samurais
+                .Select(s => new { newName = ReverseString(s.Name) })
+                .ToList();
+            Console.WriteLine("========================================");
+            samurais.ForEach(s => Console.WriteLine(s));
+            Console.WriteLine("========================================");
+        }
+
+        private static string ReverseString(string value)
+        {
+            var stringChar = value.AsEnumerable();
+            return string.Concat(stringChar.Reverse());
         }
 
         private static void RawSqlQueryStoredProcedure()
