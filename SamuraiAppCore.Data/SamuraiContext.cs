@@ -53,7 +53,7 @@ namespace SamuraiAppCore.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var connectionString = @"Server=(LocalDB)\MSSQLLocalDB;Integrated Security=true;Database=SamuraiDataCore;AttachDbFileName=E:\sato\MSSQLLocalDB\SamuraiDataCore\SamuraiDataCore.mdf";
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseSqlServer(connectionString, options => options.MaxBatchSize(30));
 
             // Logging
             // https://docs.microsoft.com/en-us/ef/core/miscellaneous/logging

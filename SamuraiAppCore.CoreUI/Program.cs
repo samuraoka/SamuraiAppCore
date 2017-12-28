@@ -8,6 +8,18 @@ namespace SamuraiAppCore.CoreUI
         static void Main(string[] args)
         {
             InsertSamurai();
+            InsertMultipleSamurais();
+        }
+
+        private static void InsertMultipleSamurais()
+        {
+            var samurai = new Samurai { Name = "Julie" };
+            var samuraiSammy = new Samurai { Name = "Sampson" };
+            using (var context = new SamuraiContext())
+            {
+                context.Samurais.AddRange(samurai, samuraiSammy);
+                context.SaveChanges();
+            }
         }
 
         private static void InsertSamurai()
