@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using SamuraiAppCore.CoreUI;
 using SamuraiAppCore.Data;
-using SamuraiAppCore.Domain;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace SamuraiAppCore.Test
@@ -25,7 +23,8 @@ namespace SamuraiAppCore.Test
         {
             using (var ctx = new SamuraiContext())
             {
-                InsertNewPkFkGraphAsync(ctx).Wait();
+                Program.Context = ctx;
+                Program.InsertNewPkFkGraphAsync().Wait();
             }
 
             using (var ctx = new SamuraiContext())
@@ -46,7 +45,8 @@ namespace SamuraiAppCore.Test
         {
             using (var ctx = new SamuraiContext())
             {
-                InsertNewPkFkGraphAsync(ctx).Wait();
+                Program.Context = ctx;
+                Program.InsertNewPkFkGraphAsync().Wait();
             }
 
             using (var ctx = new SamuraiContext())
@@ -65,7 +65,8 @@ namespace SamuraiAppCore.Test
         {
             using (var ctx = new SamuraiContext())
             {
-                InsertNewPkFkGraphAsync(ctx).Wait();
+                Program.Context = ctx;
+                Program.InsertNewPkFkGraphAsync().Wait();
             }
 
             using (var ctx = new SamuraiContext())
@@ -82,20 +83,5 @@ namespace SamuraiAppCore.Test
                 Assert.Equal(expectedQuote2, quote2.Text);
             }
         }
-
-        private static async Task InsertNewPkFkGraphAsync(SamuraiContext context)
-        {
-            var samurai = new Samurai
-            {
-                Name = "Kambei Shimada",
-                Quotes = new List<Quote> {
-                    new Quote { Text = "I've come to save you" },
-                    new Quote { Text = "I told you to watch out for the sharp sword! Oh well!" },
-                },
-            };
-            await context.Samurais.AddAsync(samurai);
-            await context.SaveChangesAsync();
-        }
-
     }
 }
