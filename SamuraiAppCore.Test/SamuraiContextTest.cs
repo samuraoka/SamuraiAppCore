@@ -9,14 +9,22 @@ namespace SamuraiAppCore.Test
 {
     public class SamuraiContextTest
     {
-        [Fact]
-        public void ShouldInsertNewPkFkGraphSamurai()
+        // Comparing xUnit.net to other frameworks
+        // https://xunit.github.io/docs/comparisons
+        public SamuraiContextTest()
         {
             using (var ctx = new SamuraiContext())
             {
                 ctx.Database.EnsureDeleted();
                 ctx.Database.Migrate();
+            }
+        }
 
+        [Fact]
+        public void ShouldInsertNewPkFkGraphSamurai()
+        {
+            using (var ctx = new SamuraiContext())
+            {
                 InsertNewPkFkGraphAsync(ctx).Wait();
             }
 
@@ -38,9 +46,6 @@ namespace SamuraiAppCore.Test
         {
             using (var ctx = new SamuraiContext())
             {
-                ctx.Database.EnsureDeleted();
-                ctx.Database.Migrate();
-
                 InsertNewPkFkGraphAsync(ctx).Wait();
             }
 
@@ -60,9 +65,6 @@ namespace SamuraiAppCore.Test
         {
             using (var ctx = new SamuraiContext())
             {
-                ctx.Database.EnsureDeleted();
-                ctx.Database.Migrate();
-
                 InsertNewPkFkGraphAsync(ctx).Wait();
             }
 
