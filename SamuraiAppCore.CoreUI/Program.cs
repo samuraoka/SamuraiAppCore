@@ -70,7 +70,7 @@ namespace SamuraiAppCore.CoreUI
             await Context.SaveChangesAsync();
         }
 
-        private static async Task AddOneToOneToExistingObjectWhileTrackedAsync()
+        public static async Task AddOneToOneToExistingObjectWhileTrackedAsync()
         {
             await InsertNewPkFkGraphAsync();
 

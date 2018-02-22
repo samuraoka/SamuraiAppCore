@@ -73,6 +73,7 @@ namespace SamuraiAppCore.Test
             {
                 var expectedQuote1 = "I've come to save you";
                 var expectedQuote2 = "I told you to watch out for the sharp sword! Oh well!";
+                var expectedSamuraiId = 1;
 
                 var quote1 = ctx.Quotes.FirstAsync(
                     q => q.Text == expectedQuote1).GetAwaiter().GetResult();
@@ -81,6 +82,9 @@ namespace SamuraiAppCore.Test
 
                 Assert.Equal(expectedQuote1, quote1.Text);
                 Assert.Equal(expectedQuote2, quote2.Text);
+
+                Assert.Equal(expectedSamuraiId, quote1.SamuraiId);
+                Assert.Equal(expectedSamuraiId, quote2.SamuraiId);
             }
         }
 
@@ -122,6 +126,106 @@ namespace SamuraiAppCore.Test
                     s => s.Name == "Shichiroji").GetAwaiter().GetResult();
 
                 Assert.Equal(expectedRealName, samurai.SecretIdentity.RealName);
+            }
+        }
+
+        [Fact]
+        public void ShouldAddChildToExistingObjectQuoteCount()
+        {
+            using (var ctx = new SamuraiContext())
+            {
+                Program.Context = ctx;
+                Program.AddChildToExistingObjectAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                var samurai = ctx.Samurais.Include(s => s.Quotes).FirstAsync(
+                    s => s.Name == "Shichiroji").GetAwaiter().GetResult();
+
+                // Do not use equality check to check for collection size.
+                // https://xunit.github.io/xunit.analyzers/rules/xUnit2013
+                Assert.Single(samurai.Quotes);
+            }
+        }
+
+        [Fact]
+        public void ShouldAddChildToExistingObjectQuote()
+        {
+            using (var ctx = new SamuraiContext())
+            {
+                Program.Context = ctx;
+                Program.AddChildToExistingObjectAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                var expectedQuote = "I bet you're happy that I've saved you!";
+                var expectedSamuraiId = 1;
+
+                var quote = ctx.Quotes.FirstAsync(
+                    q => q.Text == expectedQuote).GetAwaiter().GetResult();
+
+                Assert.Equal(expectedQuote, quote.Text);
+                Assert.Equal(expectedSamuraiId, quote.SamuraiId);
+            }
+        }
+
+        [Fact]
+        public void ShouldAddOneToOneToExistingObjectWhileTraked()
+        {
+            using (var ctx = new SamuraiContext())
+            {
+                Program.Context = ctx;
+                Program.AddOneToOneToExistingObjectWhileTrackedAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                var samurai = ctx.Samurais.Include(s => s.SecretIdentity).SingleAsync(
+                    s => s.Name == "Kambei Shimada").GetAwaiter().GetResult();
+
+                Assert.NotNull(samurai.SecretIdentity);
+            }
+        }
+
+        [Fact]
+        public void ShouldAddOneToOneToExistingObjectWhileTrakedRealName()
+        {
+            using (var ctx = new SamuraiContext())
+            {
+                Program.Context = ctx;
+                Program.AddOneToOneToExistingObjectWhileTrackedAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                var expectedRealName = "Sampson";
+
+                var samurai = ctx.Samurais.Include(s => s.SecretIdentity).SingleAsync(
+                    s => s.Name == "Kambei Shimada").GetAwaiter().GetResult();
+
+                Assert.Equal(expectedRealName, samurai.SecretIdentity.RealName);
+            }
+        }
+
+        [Fact]
+        public void ShouldAddOneToOneToExistingObjectWhileTrakedRelation()
+        {
+            using (var ctx = new SamuraiContext())
+            {
+                Program.Context = ctx;
+                Program.AddOneToOneToExistingObjectWhileTrackedAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                var expectedSamuraiId = 1;
+
+                var samurai = ctx.Samurais.Include(s => s.SecretIdentity).SingleAsync(
+                    s => s.Name == "Kambei Shimada").GetAwaiter().GetResult();
+
+                Assert.Equal(expectedSamuraiId, samurai.SecretIdentity.SamuraiId);
             }
         }
 
