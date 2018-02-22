@@ -150,7 +150,7 @@ namespace SamuraiAppCore.CoreUI
             }
         }
 
-        private static async Task AddManyToManyWithObjectsAsync()
+        public static async Task AddManyToManyWithObjectsAsync()
         {
             // Add samurai and battles for subsequence processing
             await InsertNewPkFkGraphAsync();

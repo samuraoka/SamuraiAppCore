@@ -416,5 +416,23 @@ namespace SamuraiAppCore.Test
                 Assert.Equal(expectedBattleId, samuraiBattles.BattleId);
             }
         }
+
+        [Fact]
+        public void ShouldAddManyToManyWithObjects()
+        {
+            using (var ctx = new SamuraiContext())
+            {
+                Program.Context = ctx;
+                Program.AddManyToManyWithObjectsAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                var samurai = ctx.Samurais.Include(s => s.SamuraiBattles).SingleAsync(
+                    s => s.Name == "Kambei Shimada").GetAwaiter().GetResult();
+
+                Assert.Single(samurai.SamuraiBattles);
+            }
+        }
     }
 }
