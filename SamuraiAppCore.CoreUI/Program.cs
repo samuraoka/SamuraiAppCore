@@ -58,7 +58,7 @@ namespace SamuraiAppCore.CoreUI
             await Context.SaveChangesAsync();
         }
 
-        private static async Task AddChildToExistingObjectAsync()
+        public static async Task AddChildToExistingObjectAsync()
         {
             await InsertNewOneToOneGraphAsync();
 
