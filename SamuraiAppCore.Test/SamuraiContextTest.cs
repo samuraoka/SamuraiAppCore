@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SamuraiAppCore.CoreUI;
 using SamuraiAppCore.Data;
+using System;
 using Xunit;
 
 namespace SamuraiAppCore.Test
@@ -284,6 +285,96 @@ namespace SamuraiAppCore.Test
                     s => s.Name == "Shichiroji").GetAwaiter().GetResult();
 
                 Assert.Equal(expectedSamuraiId, samurai.SecretIdentity.SamuraiId);
+            }
+        }
+
+        [Fact]
+        public void ShouldAddBattles()
+        {
+            using (var ctx = new SamuraiContext())
+            {
+                Program.Context = ctx;
+                Program.AddBattlesAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                var expectedBattleCount = 3;
+
+                var battles = ctx.Battles.ToListAsync().GetAwaiter().GetResult();
+                Assert.Equal(expectedBattleCount, battles.Count);
+            }
+        }
+
+        [Fact]
+        public void ShouldAddBattlesBattle1()
+        {
+            using (var ctx = new SamuraiContext())
+            {
+                Program.Context = ctx;
+                Program.AddBattlesAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                var expectedBattleName = "Battle of Shiroyama";
+                var expectedStartDate = new DateTime(1877, 9, 24);
+                var expectedEndDate = new DateTime(1877, 9, 24);
+
+                var battle = ctx.Battles.SingleAsync(
+                    b => b.Name == expectedBattleName).GetAwaiter().GetResult();
+
+                Assert.Equal(expectedBattleName, battle.Name);
+                Assert.Equal(expectedStartDate, battle.StartDate);
+                Assert.Equal(expectedEndDate, battle.EndDate);
+            }
+        }
+
+        [Fact]
+        public void ShouldAddBattlesBattle2()
+        {
+            using (var ctx = new SamuraiContext())
+            {
+                Program.Context = ctx;
+                Program.AddBattlesAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                var expectedBattleName = "Siege of Osaka";
+                var expectedStartDate = new DateTime(1614, 1, 1);
+                var expectedEndDate = new DateTime(1615, 12, 31);
+
+                var battle = ctx.Battles.SingleAsync(
+                    b => b.Name == expectedBattleName).GetAwaiter().GetResult();
+
+                Assert.Equal(expectedBattleName, battle.Name);
+                Assert.Equal(expectedStartDate, battle.StartDate);
+                Assert.Equal(expectedEndDate, battle.EndDate);
+            }
+        }
+
+        [Fact]
+        public void ShouldAddBattlesBattle3()
+        {
+            using (var ctx = new SamuraiContext())
+            {
+                Program.Context = ctx;
+                Program.AddBattlesAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                var expectedBattleName = "Boshin War";
+                var expectedStartDate = new DateTime(1868, 1, 1);
+                var expectedEndDate = new DateTime(1869, 1, 1);
+
+                var battle = ctx.Battles.SingleAsync(
+                    b => b.Name == expectedBattleName).GetAwaiter().GetResult();
+
+                Assert.Equal(expectedBattleName, battle.Name);
+                Assert.Equal(expectedStartDate, battle.StartDate);
+                Assert.Equal(expectedEndDate, battle.EndDate);
             }
         }
     }

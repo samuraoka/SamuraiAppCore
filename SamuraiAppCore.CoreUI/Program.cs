@@ -98,7 +98,7 @@ namespace SamuraiAppCore.CoreUI
             }
         }
 
-        private static async Task AddBattlesAsync()
+        public static async Task AddBattlesAsync()
         {
             await Context.Battles.AddRangeAsync(new List<Battle> {
                 new Battle
