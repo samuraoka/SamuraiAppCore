@@ -50,7 +50,7 @@ namespace SamuraiAppCore.CoreUI
             await Context.SaveChangesAsync();
         }
 
-        private static async Task InsertNewOneToOneGraphAsync()
+        public static async Task InsertNewOneToOneGraphAsync()
         {
             var samurai = new Samurai { Name = "Shichiroji" };
             samurai.SecretIdentity = new SecretIdentity { RealName = "Julie" };

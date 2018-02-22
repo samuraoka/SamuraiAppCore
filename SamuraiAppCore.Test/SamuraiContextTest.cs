@@ -83,5 +83,47 @@ namespace SamuraiAppCore.Test
                 Assert.Equal(expectedQuote2, quote2.Text);
             }
         }
+
+        [Fact]
+        public void ShouldInsertNewOneToOneGraphSamurai()
+        {
+            using (var ctx = new SamuraiContext())
+            {
+                Program.Context = ctx;
+                Program.InsertNewOneToOneGraphAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                var expectedSamuraiName = "Shichiroji";
+
+                var samurai = ctx.Samurais.Include(s => s.SecretIdentity).FirstAsync(
+                    s => s.Name == expectedSamuraiName).GetAwaiter().GetResult();
+
+                Assert.Equal(expectedSamuraiName, samurai.Name);
+                Assert.NotNull(samurai.SecretIdentity);
+            }
+        }
+
+        [Fact]
+        public void ShouldInsertNewOneToOneGraphSecretIdentity()
+        {
+            using (var ctx = new SamuraiContext())
+            {
+                Program.Context = ctx;
+                Program.InsertNewOneToOneGraphAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                var expectedRealName = "Julie";
+
+                var samurai = ctx.Samurais.Include(s => s.SecretIdentity).FirstAsync(
+                    s => s.Name == "Shichiroji").GetAwaiter().GetResult();
+
+                Assert.Equal(expectedRealName, samurai.SecretIdentity.RealName);
+            }
+        }
+
     }
 }
