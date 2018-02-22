@@ -29,6 +29,9 @@ namespace SamuraiAppCore.Data
     /// 
     /// To add a new migration, execute a following command
     /// PM> Add-Migration -Name AddSprocs -Context SamuraiContext -Project SamuraiAppCore.Data -StartupProject SamuraiAppCore.CoreUI
+    /// 
+    /// To add a new migration, execute a following command
+    /// PM> Add-Migration -Name AddedSamuraiBattlesToContext -Context SamuraiContext -Project SamuraiAppCore.Data -StartupProject SamuraiAppCore.CoreUI
     /// </summary>
     public class SamuraiContext : DbContext
     {
@@ -39,11 +42,13 @@ namespace SamuraiAppCore.Data
         // https://www.nuget.org/packages/Microsoft.Extensions.Logging.Console/
         // Install-Package Microsoft.Extensions.Logging.Console -ProjectName SamuraiAppCore.Data -Version 2.0.0
         public static readonly LoggerFactory SamuraiLoggerFactory
-            = new LoggerFactory(new[] { new ConsoleLoggerProvider((_, __) => true, true) });
+            = new LoggerFactory(new[] { new ConsoleLoggerProvider((category, level)
+                => category == DbLoggerCategory.Database.Command.Name && level == LogLevel.Information, true) });
 
         public DbSet<Samurai> Samurais { get; set; }
         public DbSet<Battle> Battles { get; set; }
         public DbSet<Quote> Quotes { get; set; }
+        public DbSet<SamuraiBattle> SamuraiBattles { get; set; }
 
         /// <summary>
         /// The following URL shows how to write connection strings
@@ -55,7 +60,7 @@ namespace SamuraiAppCore.Data
         /// <param name="optionsBuilder"></param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connectionString = @"Server=(LocalDB)\MSSQLLocalDB;Integrated Security=true;Database=SamuraiDataCore;AttachDbFileName=E:\sato\MSSQLLocalDB\SamuraiDataCore\SamuraiDataCore.mdf";
+            var connectionString = @"Server=(LocalDB)\MSSQLLocalDB;Integrated Security=true;Database=SamuraiRelatedDataCore;AttachDbFileName=E:\sato\MSSQLLocalDB\SamuraiDataCore\SamuraiRelatedDataCore.mdf";
             optionsBuilder.UseSqlServer(connectionString, options => options.MaxBatchSize(30));
 
             // Logging
