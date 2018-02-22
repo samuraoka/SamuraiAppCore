@@ -229,5 +229,62 @@ namespace SamuraiAppCore.Test
             }
         }
 
+        [Fact]
+        public void ShouldReplaceOneToOneToExistingObjectWhileTracked()
+        {
+            using (var ctx = new SamuraiContext())
+            {
+                Program.Context = ctx;
+                Program.ReplaceOneToOneToExistingObjectWhileTrackedAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                var samurai = ctx.Samurais.Include(s => s.SecretIdentity).FirstAsync(
+                    s => s.Name == "Shichiroji").GetAwaiter().GetResult();
+
+                Assert.NotNull(samurai.SecretIdentity);
+            }
+        }
+
+        [Fact]
+        public void ShouldReplaceOneToOneToExistingObjectWhileTrackedRealName()
+        {
+            using (var ctx = new SamuraiContext())
+            {
+                Program.Context = ctx;
+                Program.ReplaceOneToOneToExistingObjectWhileTrackedAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                var expectedRealName = "Baba";
+
+                var samurai = ctx.Samurais.Include(s => s.SecretIdentity).FirstAsync(
+                    s => s.Name == "Shichiroji").GetAwaiter().GetResult();
+
+                Assert.Equal(expectedRealName, samurai.SecretIdentity.RealName);
+            }
+        }
+
+        [Fact]
+        public void ShouldReplaceOneToOneToExistingObjectWhileTrackedRelation()
+        {
+            using (var ctx = new SamuraiContext())
+            {
+                Program.Context = ctx;
+                Program.ReplaceOneToOneToExistingObjectWhileTrackedAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                var expectedSamuraiId = 1;
+
+                var samurai = ctx.Samurais.Include(s => s.SecretIdentity).FirstAsync(
+                    s => s.Name == "Shichiroji").GetAwaiter().GetResult();
+
+                Assert.Equal(expectedSamuraiId, samurai.SecretIdentity.SamuraiId);
+            }
+        }
     }
 }

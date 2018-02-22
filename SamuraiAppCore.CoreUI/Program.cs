@@ -82,7 +82,7 @@ namespace SamuraiAppCore.CoreUI
             }
         }
 
-        private static async Task ReplaceOneToOneToExistingObjectWhileTrackedAsync()
+        public static async Task ReplaceOneToOneToExistingObjectWhileTrackedAsync()
         {
             await InsertNewOneToOneGraphAsync();
 
