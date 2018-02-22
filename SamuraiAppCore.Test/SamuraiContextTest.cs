@@ -377,5 +377,44 @@ namespace SamuraiAppCore.Test
                 Assert.Equal(expectedEndDate, battle.EndDate);
             }
         }
+
+        [Fact]
+        public void ShouldAddManyToManyWithFks()
+        {
+            using (var ctx = new SamuraiContext())
+            {
+                Program.Context = ctx;
+                Program.AddManyToManyWithFksAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                var samurai = ctx.Samurais.Include(s => s.SamuraiBattles).FirstAsync(
+                    s => s.Name == "Kambei Shimada").GetAwaiter().GetResult();
+
+                Assert.Single(samurai.SamuraiBattles);
+            }
+        }
+
+        [Fact]
+        public void ShouldAddManyToManyWithFksRelation()
+        {
+            using (var ctx = new SamuraiContext())
+            {
+                Program.Context = ctx;
+                Program.AddManyToManyWithFksAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                int expectedSamuraiId = 1;
+                int expectedBattleId = 1;
+
+                var samuraiBattles = ctx.SamuraiBattles.FirstAsync().GetAwaiter().GetResult();
+
+                Assert.Equal(expectedSamuraiId, samuraiBattles.SamuraiId);
+                Assert.Equal(expectedBattleId, samuraiBattles.BattleId);
+            }
+        }
     }
 }

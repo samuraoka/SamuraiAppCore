@@ -123,7 +123,7 @@ namespace SamuraiAppCore.CoreUI
             await Context.SaveChangesAsync();
         }
 
-        private static async Task AddManyToManyWithFksAsync()
+        public static async Task AddManyToManyWithFksAsync()
         {
             // Add samurai and battles for subsequence processing
             await InsertNewPkFkGraphAsync();
