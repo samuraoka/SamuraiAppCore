@@ -129,19 +129,15 @@ namespace SamuraiAppCore.CoreUI
             await InsertNewPkFkGraphAsync();
             await AddBattlesAsync();
 
-            const int targetSamuraiId = 1;
-            const int targetBattleId = 1;
-
             // Best way to check if object exists in Entity Framework?
             // https://stackoverflow.com/questions/1802286/best-way-to-check-if-object-exists-in-entity-framework
-            var existanceOfSamurai = await Context.Samurais.AnyAsync(x => x.Id == targetBattleId);
-            var existanceOfBattle = await Context.Battles.AnyAsync(x => x.Id == targetBattleId);
-            if (existanceOfSamurai && existanceOfBattle)
+            var samurai = await Context.Samurais.FirstOrDefaultAsync();
+            var battle = await Context.Battles.FirstOrDefaultAsync();
+            if (samurai != null && battle != null)
             {
-                var sb = new SamuraiBattle { SamuraiId = targetSamuraiId, BattleId = targetBattleId };
+                var sb = new SamuraiBattle { SamuraiId = samurai.Id, BattleId = battle.Id };
                 var existanceOfSamuraiBattle = await Context.SamuraiBattles.AnyAsync(
-                    x => (x.SamuraiId == targetSamuraiId && x.BattleId == targetBattleId));
-
+                    x => (x.SamuraiId == samurai.Id && x.BattleId == battle.Id));
                 if (existanceOfSamuraiBattle == false)
                 {
                     await Context.SamuraiBattles.AddAsync(sb);

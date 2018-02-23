@@ -50,6 +50,19 @@ namespace SamuraiAppCore.Data
         public DbSet<Quote> Quotes { get; set; }
         public DbSet<SamuraiBattle> SamuraiBattles { get; set; }
 
+        public bool UseInMemoryDatabase { get; private set; }
+        public string InMemoryDatabaseName { get; private set; }
+
+        public SamuraiContext()
+        {
+        }
+
+        public SamuraiContext(string databaseName)
+        {
+            UseInMemoryDatabase = true;
+            InMemoryDatabaseName = databaseName;
+        }
+
         /// <summary>
         /// The following URL shows how to write connection strings
         /// https://msdn.microsoft.com/en-us/library/system.data.sqlclient.sqlconnection.connectionstring(v=vs.110).aspx
@@ -60,8 +73,17 @@ namespace SamuraiAppCore.Data
         /// <param name="optionsBuilder"></param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connectionString = @"Server=(LocalDB)\MSSQLLocalDB;Integrated Security=true;Database=SamuraiRelatedDataCore;AttachDbFileName=E:\sato\MSSQLLocalDB\SamuraiDataCore\SamuraiRelatedDataCore.mdf";
-            optionsBuilder.UseSqlServer(connectionString, options => options.MaxBatchSize(30));
+            if (UseInMemoryDatabase == false)
+            {
+                var connectionString = @"Server=(LocalDB)\MSSQLLocalDB;Integrated Security=true;Database=SamuraiRelatedDataCore;AttachDbFileName=E:\sato\MSSQLLocalDB\SamuraiDataCore\SamuraiRelatedDataCore.mdf";
+                optionsBuilder.UseSqlServer(connectionString, options => options.MaxBatchSize(30));
+            }
+            else
+            {
+                // Microsoft.EntityFrameworkCore.InMemory
+                // Install-Package -Id Microsoft.EntityFrameworkCore.InMemory -ProjectName SamuraiAppCore.Data
+                optionsBuilder.UseInMemoryDatabase(InMemoryDatabaseName);
+            }
 
             // Logging
             // https://docs.microsoft.com/en-us/ef/core/miscellaneous/logging
