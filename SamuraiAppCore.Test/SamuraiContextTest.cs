@@ -484,5 +484,214 @@ namespace SamuraiAppCore.Test
                 Assert.True(samurais.All(s => s.SecretIdentity != null));
             }
         }
+
+        [Fact]
+        public void CouldGetAnonymousTypeViaProjection()
+        {
+            using (var ctx = new SamuraiContext(options))
+            {
+                Program.Context = ctx;
+                Program.AddOneToOneToExistingObjectWhileTrackedAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext())
+            {
+                var quotes = ctx.Quotes.Select(
+                    q => new { q.Id, q.Text }).ToList();
+                Assert.NotNull(quotes);
+                Assert.NotEmpty(quotes);
+            }
+        }
+
+        [Fact]
+        public void CouldGetAnonymousTypeViaProjectionWithRelated()
+        {
+            using (var ctx = new SamuraiContext(options))
+            {
+                Program.Context = ctx;
+                Program.AddOneToOneToExistingObjectWhileTrackedAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext(options))
+            {
+                var samurais = ctx.Samurais
+                    .Select(s => new
+                    {
+                        s.Id,
+                        s.SecretIdentity.RealName,
+                        QuoteCount = s.Quotes.Count
+                    }).ToList();
+                Assert.Single(samurais);
+            }
+        }
+
+        [Fact]
+        public void CouldGetAnonymousTypeViaProjectionWithRelatedFirstItem()
+        {
+            using (var ctx = new SamuraiContext(options))
+            {
+                Program.Context = ctx;
+                Program.AddOneToOneToExistingObjectWhileTrackedAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext(options))
+            {
+                var samurais = ctx.Samurais
+                    .Select(s => new
+                    {
+                        s.Id,
+                        s.SecretIdentity.RealName,
+                        QuoteCount = s.Quotes.Count
+                    }).ToList();
+                var samurai = samurais.First();
+                Assert.Equal(2, samurai.QuoteCount);
+                Assert.Equal("Sampson", samurai.RealName);
+            }
+        }
+
+        [Fact]
+        public void ShouldFixupRelatedObjectsBefore()
+        {
+            using (var ctx = new SamuraiContext(options))
+            {
+                Program.Context = ctx;
+                Program.AddOneToOneToExistingObjectWhileTrackedAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext(options))
+            {
+                var samurai = ctx.Samurais.First();
+                Assert.Empty(samurai.Quotes);
+            }
+        }
+
+        [Fact]
+        public void ShouldFixupRelatedObjectsAfter()
+        {
+            using (var ctx = new SamuraiContext(options))
+            {
+                Program.Context = ctx;
+                Program.AddOneToOneToExistingObjectWhileTrackedAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext(options))
+            {
+                var samurai = ctx.Samurais.First();
+                var quotes = ctx.Quotes.Where(q => q.Samurai == samurai).ToList();
+                Assert.NotEmpty(samurai.Quotes);
+            }
+        }
+
+        [Fact]
+        public void ShouldEagerLoadViaProjectionNotQuite()
+        {
+            using (var ctx = new SamuraiContext(options))
+            {
+                Program.Context = ctx;
+                Program.AddOneToOneToExistingObjectWhileTrackedAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext(options))
+            {
+                var samurais = ctx.Samurais
+                    .Select(s => new { Samurai = s, Quotes = s.Quotes })
+                    .ToList();
+                var samurai = samurais.First();
+                Assert.NotNull(samurai.Quotes);
+                Assert.NotNull(samurai.Samurai.Quotes);
+                Assert.NotEmpty(samurai.Quotes);
+                Assert.NotEmpty(samurai.Samurai.Quotes);
+            }
+        }
+
+        [Fact]
+        public void ShouldFilteredEagerLoadViaProjectionNope()
+        {
+            using (var ctx = new SamuraiContext(options))
+            {
+                Program.Context = ctx;
+                Program.AddChildToExistingObjectAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext(options))
+            {
+                var samurais = ctx.Samurais
+                    .Select(s => new
+                    {
+                        samurai = s,
+                        Quotes = s.Quotes.Where(q => q.Text.Contains("happy")).ToList()
+                    })
+                    .ToList();
+                var samurai = samurais.First();
+                Assert.NotNull(samurai.Quotes);
+                Assert.NotNull(samurai.samurai.Quotes);
+                Assert.NotEmpty(samurai.Quotes);
+                Assert.Empty(samurai.samurai.Quotes); // Filtered Eager Load relation is not tracked
+            }
+        }
+
+        [Fact]
+        public void CouldExplicitLoadCollection()
+        {
+            using (var ctx = new SamuraiContext(options))
+            {
+                Program.Context = ctx;
+                Program.AddChildToExistingObjectAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext(options))
+            {
+                var samurai = ctx.Samurais.First();
+                Assert.Empty(samurai.Quotes);
+
+                ctx.Entry(samurai).Collection(s => s.Quotes).Load();
+                Assert.NotEmpty(samurai.Quotes);
+            }
+        }
+
+        [Fact]
+        public void CouldExplicitLoadReference()
+        {
+            using (var ctx = new SamuraiContext(options))
+            {
+                Program.Context = ctx;
+                Program.AddChildToExistingObjectAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext(options))
+            {
+                var samurai = ctx.Samurais.First();
+                Assert.Null(samurai.SecretIdentity);
+
+                ctx.Entry(samurai).Reference(s => s.SecretIdentity).Load();
+                Assert.NotNull(samurai.SecretIdentity);
+            }
+        }
+
+        [Fact]
+        public void CouldExplicitLoadWithChildFilterCollection()
+        {
+            using (var ctx = new SamuraiContext(options))
+            {
+                Program.Context = ctx;
+                Program.InsertNewPkFkGraphAsync().Wait();
+                Program.AddChildToExistingObjectAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext(options))
+            {
+                var samurai = ctx.Samurais.First();
+                Assert.Empty(samurai.Quotes);
+
+                ctx.Entry(samurai)
+                    .Collection(s => s.Quotes)
+                    .Query()
+                    .Where(q => q.Text.Contains("happy"))
+                    .Load();
+
+                Assert.Single(samurai.Quotes);
+            }
+        }
+
     }
 }

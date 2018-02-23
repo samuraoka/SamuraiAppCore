@@ -3,6 +3,7 @@ using SamuraiAppCore.Data;
 using SamuraiAppCore.Domain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SamuraiAppCore.CoreUI
@@ -34,7 +35,14 @@ namespace SamuraiAppCore.CoreUI
                 //await AddManyToManyWithObjectsAsync();
                 //await EagerLoadWithIncludeAsync();
                 //await EagerLoadManyToManyAkaChildrenGrandchildren();
-                await EagerLoadWithMultipleBranches();
+                //await EagerLoadWithMultipleBranches();
+                //await AnonymousTypeViaProjectionAsync();
+                //await AnonymousTypeViaProjectionWithRelatedAsync();
+                //await RelatedObjectsFixupAsync();
+                //await EagerLoadViaProjectionNotQuiteAsync();
+                //await FilteredEagerLoadViaProjectionNopeAsync();
+                //await ExplicitLoadAsync();
+                await ExplicitLoadWithChildFilter();
             }
             Context = null;
         }
@@ -198,6 +206,91 @@ namespace SamuraiAppCore.CoreUI
                 .Include(s => s.SecretIdentity)
                 .Include(s => s.Quotes)
                 .ToListAsync();
+        }
+
+        private static async Task AnonymousTypeViaProjectionAsync()
+        {
+            // Insert quotes for subsequent processing
+            await AddOneToOneToExistingObjectWhileTrackedAsync();
+
+            var quotes = Context.Quotes
+                .Select(q => new { q.Id, q.Text })
+                .ToList();
+        }
+
+        private static async Task AnonymousTypeViaProjectionWithRelatedAsync()
+        {
+            // Insert quotes for subsequent processing
+            await AddOneToOneToExistingObjectWhileTrackedAsync();
+
+            var samurais = Context.Samurais
+                .Select(s => new
+                {
+                    s.Id,
+                    s.SecretIdentity.RealName,
+                    QuoteCount = s.Quotes.Count
+                }).ToList();
+        }
+
+        private static async Task RelatedObjectsFixupAsync()
+        {
+            // Insert quotes for subsequent processing
+            await AddOneToOneToExistingObjectWhileTrackedAsync();
+
+            var samurai = Context.Samurais.First();
+            var quotes = Context.Quotes.Where(q => q.Samurai == samurai).ToList();
+        }
+
+        private static async Task EagerLoadViaProjectionNotQuiteAsync()
+        {
+            // Insert quotes for subsequent processing
+            await AddOneToOneToExistingObjectWhileTrackedAsync();
+
+            var samurais = await Context.Samurais
+                .Select(s => new { Samurai = s, Quotes = s.Quotes })
+                .ToListAsync();
+        }
+
+        private static async Task FilteredEagerLoadViaProjectionNopeAsync()
+        {
+            // Insert samurai and quotes for subsequent processing
+            await AddChildToExistingObjectAsync();
+
+            var samurais = Context.Samurais.Select(s => new
+            {
+                samurai = s,
+                Quotes = s.Quotes.Where(q => q.Text.Contains("happy")).ToList()
+            }).ToList();
+        }
+
+        private static async Task ExplicitLoadAsync()
+        {
+            // Insert samurai and quotes for subsequent processing
+            await AddChildToExistingObjectAsync();
+
+            using (var ctx = new SamuraiContext())
+            {
+                var samurai = await ctx.Samurais.FirstAsync();
+                await ctx.Entry(samurai).Collection(s => s.Quotes).LoadAsync();
+                await ctx.Entry(samurai).Reference(s => s.SecretIdentity).LoadAsync();
+            }
+        }
+
+        private static async Task ExplicitLoadWithChildFilter()
+        {
+            // Insert samurai and quotes for subsequent processing
+            await AddChildToExistingObjectAsync();
+
+            using (var ctx = new SamuraiContext())
+            {
+                var samurai = await ctx.Samurais.FirstAsync();
+                await ctx.Entry(samurai)
+                    .Collection(s => s.Quotes)
+                    .Query()
+                    .Where(q => q.Text.Contains("happy"))
+                    .LoadAsync();
+            }
+
         }
     }
 }

@@ -1,0 +1,10 @@
+﻿{
+  // Running Tests in Parallel
+  // https://xunit.github.io/docs/running-tests-in-parallel
+  //
+  // Execute unit tests serially (rather than in parallel)
+  // https://stackoverflow.com/questions/1408175/execute-unit-tests-serially-rather-than-in-parallel
+  //
+  "parallelizeAssembly": true,
+  "parallelizeTestCollections": true
+}
