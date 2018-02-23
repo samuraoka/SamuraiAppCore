@@ -396,5 +396,83 @@ namespace SamuraiAppCore.Test
                 Assert.Single(samurai.SamuraiBattles);
             }
         }
+
+        [Fact]
+        public void CouldEagerLoadWithInclude()
+        {
+            using (var ctx = new SamuraiContext(dataBaseName))
+            {
+                Program.Context = ctx;
+                Program.AddChildToExistingObjectAsync().Wait();
+                Program.InsertNewPkFkGraphAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext(dataBaseName))
+            {
+                var samuraiWithQuotes = ctx.Samurais.Include(
+                    s => s.Quotes).ToListAsync().GetAwaiter().GetResult();
+                Assert.True(samuraiWithQuotes.All(
+                    s => s.Quotes != null && s.Quotes.Count > 0));
+            }
+        }
+
+        [Fact]
+        public void ChouldEagerLoadManyToManyAkaChildrenGrandchildren()
+        {
+            using (var ctx = new SamuraiContext(dataBaseName))
+            {
+                Program.Context = ctx;
+                Program.AddManyToManyWithObjectsAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext(dataBaseName))
+            {
+                var samuraiWithBattles = ctx.Samurais
+                    .Include(s => s.SamuraiBattles)
+                    .ThenInclude(sb => sb.Battle)
+                    .ToListAsync().GetAwaiter().GetResult();
+                Assert.True(samuraiWithBattles.All(s => s.SamuraiBattles != null));
+                Assert.True(samuraiWithBattles.All(
+                    s => s.SamuraiBattles.All(sb => sb.Battle != null)));
+            }
+        }
+
+        [Fact]
+        public void CouldEagerLoadWithMultipleBranchesQuote()
+        {
+            using (var ctx = new SamuraiContext(dataBaseName))
+            {
+                Program.Context = ctx;
+                Program.AddOneToOneToExistingObjectWhileTrackedAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext(dataBaseName))
+            {
+                var samurais = ctx.Samurais
+                    .Include(s => s.Quotes)
+                    .Include(s => s.SecretIdentity)
+                    .ToListAsync().GetAwaiter().GetResult();
+                Assert.True(samurais.All(s => s.Quotes != null));
+            }
+        }
+
+        [Fact]
+        public void CouldEagerLoadWithMultipleBranchesSecretIdentity()
+        {
+            using (var ctx = new SamuraiContext(dataBaseName))
+            {
+                Program.Context = ctx;
+                Program.AddOneToOneToExistingObjectWhileTrackedAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext(dataBaseName))
+            {
+                var samurais = ctx.Samurais
+                    .Include(s => s.Quotes)
+                    .Include(s => s.SecretIdentity)
+                    .ToListAsync().GetAwaiter().GetResult();
+                Assert.True(samurais.All(s => s.SecretIdentity != null));
+            }
+        }
     }
 }

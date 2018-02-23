@@ -31,7 +31,10 @@ namespace SamuraiAppCore.CoreUI
                 //await AddOneToOneToExistingObjectWhileTrackedAsync();
                 //await ReplaceOneToOneToExistingObjectWhileTrackedAsync();
                 //await AddManyToManyWithFksAsync();
-                await AddManyToManyWithObjectsAsync();
+                //await AddManyToManyWithObjectsAsync();
+                //await EagerLoadWithIncludeAsync();
+                //await EagerLoadManyToManyAkaChildrenGrandchildren();
+                await EagerLoadWithMultipleBranches();
             }
             Context = null;
         }
@@ -166,6 +169,35 @@ namespace SamuraiAppCore.CoreUI
                     await Context.SaveChangesAsync();
                 }
             }
+        }
+
+        private static async Task EagerLoadWithIncludeAsync()
+        {
+            // Add samurai and quotes for subsequent processing
+            await InsertNewPkFkGraphAsync();
+
+            var samuraiWithQuotes = await Context.Samurais.Include(s => s.Quotes).ToListAsync();
+        }
+
+        private static async Task EagerLoadManyToManyAkaChildrenGrandchildren()
+        {
+            // Add samurai and battle for subsequent processing
+            await AddManyToManyWithObjectsAsync();
+
+            var samuraiWithBattles = await Context.Samurais
+                .Include(s => s.SamuraiBattles)
+                .ThenInclude(sb => sb.Battle).ToListAsync();
+        }
+
+        private static async Task EagerLoadWithMultipleBranches()
+        {
+            // Insert samurai, quotes and secretIdentities for subsequent processing
+            await AddOneToOneToExistingObjectWhileTrackedAsync();
+
+            var samurais = await Context.Samurais
+                .Include(s => s.SecretIdentity)
+                .Include(s => s.Quotes)
+                .ToListAsync();
         }
     }
 }
