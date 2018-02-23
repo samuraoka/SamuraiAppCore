@@ -7,16 +7,26 @@ using Xunit;
 
 namespace SamuraiAppCore.Test
 {
+    // Microsoft.EntityFrameworkCore.InMemory
+    // Install-Package -Id Microsoft.EntityFrameworkCore.InMemory -ProjectName SamuraiAppCore.Data
+    // https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.InMemory/
+    //
+    // Writing tests
+    // https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory#writing-tests
+    //
+    // Comparing xUnit.net to other frameworks
+    // https://xunit.github.io/docs/comparisons
     public class SamuraiContextTest
     {
-        private string dataBaseName;
+        private DbContextOptions<SamuraiContext> options;
 
-        // Comparing xUnit.net to other frameworks
-        // https://xunit.github.io/docs/comparisons
         public SamuraiContextTest()
         {
-            dataBaseName = Guid.NewGuid().ToString();
-            using (var ctx = new SamuraiContext(dataBaseName))
+            options = new DbContextOptionsBuilder<SamuraiContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var ctx = new SamuraiContext(options))
             {
                 ctx.Database.EnsureDeleted();
                 ctx.Database.EnsureCreated();
@@ -26,13 +36,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldInsertNewPkFkGraphSamurai()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.InsertNewPkFkGraphAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 const string expectedSamuraiName = "Kambei Shimada";
                 const int expectedQuoteCount = 2;
@@ -49,13 +59,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldInsertNewPkFkGraphQUoteCount()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.InsertNewPkFkGraphAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 const int expectedQuoteCount = 2;
 
@@ -69,13 +79,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldInsertNewPkFkGraphQuote()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.InsertNewPkFkGraphAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var expectedQuote1 = "I've come to save you";
                 var expectedQuote2 = "I told you to watch out for the sharp sword! Oh well!";
@@ -93,13 +103,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldInsertNewOneToOneGraphSamurai()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.InsertNewOneToOneGraphAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var expectedSamuraiName = "Shichiroji";
 
@@ -115,13 +125,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldInsertNewOneToOneGraphSecretIdentity()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.InsertNewOneToOneGraphAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var expectedRealName = "Julie";
 
@@ -135,13 +145,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldAddChildToExistingObjectQuoteCount()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.AddChildToExistingObjectAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var samurai = ctx.Samurais.Include(s => s.Quotes).FirstAsync(
                     s => s.Name == "Shichiroji").GetAwaiter().GetResult();
@@ -155,13 +165,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldAddChildToExistingObjectQuote()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.AddChildToExistingObjectAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var expectedQuote = "I bet you're happy that I've saved you!";
 
@@ -175,13 +185,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldAddOneToOneToExistingObjectWhileTraked()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.AddOneToOneToExistingObjectWhileTrackedAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var samurai = ctx.Samurais.Include(s => s.SecretIdentity).SingleAsync(
                     s => s.Name == "Kambei Shimada").GetAwaiter().GetResult();
@@ -194,13 +204,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldAddOneToOneToExistingObjectWhileTrakedRealName()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.AddOneToOneToExistingObjectWhileTrackedAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var expectedRealName = "Sampson";
 
@@ -214,13 +224,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldReplaceOneToOneToExistingObjectWhileTracked()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.ReplaceOneToOneToExistingObjectWhileTrackedAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var samurai = ctx.Samurais.Include(s => s.SecretIdentity).FirstAsync(
                     s => s.Name == "Shichiroji").GetAwaiter().GetResult();
@@ -233,13 +243,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldReplaceOneToOneToExistingObjectWhileTrackedRealName()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.ReplaceOneToOneToExistingObjectWhileTrackedAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var expectedRealName = "Baba";
 
@@ -253,13 +263,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldAddBattles()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.AddBattlesAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var expectedBattleCount = 3;
 
@@ -271,13 +281,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldAddBattlesBattle1()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.AddBattlesAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var expectedBattleName = "Battle of Shiroyama";
                 var expectedStartDate = new DateTime(1877, 9, 24);
@@ -295,13 +305,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldAddBattlesBattle2()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.AddBattlesAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var expectedBattleName = "Siege of Osaka";
                 var expectedStartDate = new DateTime(1614, 1, 1);
@@ -319,13 +329,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldAddBattlesBattle3()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.AddBattlesAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var expectedBattleName = "Boshin War";
                 var expectedStartDate = new DateTime(1868, 1, 1);
@@ -343,13 +353,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldAddManyToManyWithFks()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.AddManyToManyWithFksAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var samurai = ctx.Samurais.Include(s => s.SamuraiBattles).FirstAsync(
                     s => s.Name == "Kambei Shimada").GetAwaiter().GetResult();
@@ -361,13 +371,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldAddManyToManyWithFksRelation()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.AddManyToManyWithFksAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 int expectedSamuraiId = 1;
                 int expectedBattleId = 1;
@@ -382,13 +392,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ShouldAddManyToManyWithObjects()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.AddManyToManyWithObjectsAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var samurai = ctx.Samurais.Include(s => s.SamuraiBattles).SingleAsync(
                     s => s.Name == "Kambei Shimada").GetAwaiter().GetResult();
@@ -400,14 +410,14 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void CouldEagerLoadWithInclude()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.AddChildToExistingObjectAsync().Wait();
                 Program.InsertNewPkFkGraphAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var samuraiWithQuotes = ctx.Samurais.Include(
                     s => s.Quotes).ToListAsync().GetAwaiter().GetResult();
@@ -419,13 +429,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void ChouldEagerLoadManyToManyAkaChildrenGrandchildren()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.AddManyToManyWithObjectsAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var samuraiWithBattles = ctx.Samurais
                     .Include(s => s.SamuraiBattles)
@@ -440,13 +450,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void CouldEagerLoadWithMultipleBranchesQuote()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.AddOneToOneToExistingObjectWhileTrackedAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var samurais = ctx.Samurais
                     .Include(s => s.Quotes)
@@ -459,13 +469,13 @@ namespace SamuraiAppCore.Test
         [Fact]
         public void CouldEagerLoadWithMultipleBranchesSecretIdentity()
         {
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 Program.Context = ctx;
                 Program.AddOneToOneToExistingObjectWhileTrackedAsync().Wait();
             }
 
-            using (var ctx = new SamuraiContext(dataBaseName))
+            using (var ctx = new SamuraiContext(options))
             {
                 var samurais = ctx.Samurais
                     .Include(s => s.Quotes)

@@ -57,10 +57,11 @@ namespace SamuraiAppCore.Data
         {
         }
 
-        public SamuraiContext(string databaseName)
+        // Add a constructor for testing
+        // https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory#add-a-constructor-for-testing
+        public SamuraiContext(DbContextOptions<SamuraiContext> options)
+            : base(options)
         {
-            UseInMemoryDatabase = true;
-            InMemoryDatabaseName = databaseName;
         }
 
         /// <summary>
@@ -73,16 +74,12 @@ namespace SamuraiAppCore.Data
         /// <param name="optionsBuilder"></param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (UseInMemoryDatabase == false)
+            // Avoid configuring two database providers
+            // https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory#avoid-configuring-two-database-providers
+            if (optionsBuilder.IsConfigured == false)
             {
                 var connectionString = @"Server=(LocalDB)\MSSQLLocalDB;Integrated Security=true;Database=SamuraiRelatedDataCore;AttachDbFileName=E:\sato\MSSQLLocalDB\SamuraiDataCore\SamuraiRelatedDataCore.mdf";
                 optionsBuilder.UseSqlServer(connectionString, options => options.MaxBatchSize(30));
-            }
-            else
-            {
-                // Microsoft.EntityFrameworkCore.InMemory
-                // Install-Package -Id Microsoft.EntityFrameworkCore.InMemory -ProjectName SamuraiAppCore.Data
-                optionsBuilder.UseInMemoryDatabase(InMemoryDatabaseName);
             }
 
             // Logging
