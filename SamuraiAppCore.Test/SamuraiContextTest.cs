@@ -749,6 +749,7 @@ namespace SamuraiAppCore.Test
             using (var ctx = new SamuraiContext(options))
             {
                 ctx.Samurais.Attach(samuraiGraph);
+                Assert.NotEmpty(ctx.ChangeTracker.Entries());
                 Assert.True(ctx.ChangeTracker.Entries().All(e => e.State == EntityState.Added));
             }
         }
@@ -761,6 +762,7 @@ namespace SamuraiAppCore.Test
             using (var ctx = new SamuraiContext(options))
             {
                 ctx.Samurais.Attach(samuraiGraph);
+                Assert.NotEmpty(ctx.ChangeTracker.Entries());
                 Assert.True(ctx.ChangeTracker.Entries().All(e => e.State == EntityState.Unchanged));
             }
         }
@@ -773,6 +775,7 @@ namespace SamuraiAppCore.Test
             using (var ctx = new SamuraiContext(options))
             {
                 ctx.Samurais.Update(samuraiGraph);
+                Assert.NotEmpty(ctx.ChangeTracker.Entries());
                 Assert.True(ctx.ChangeTracker.Entries().All(e => e.State == EntityState.Added));
             }
         }
@@ -785,6 +788,7 @@ namespace SamuraiAppCore.Test
             using (var ctx = new SamuraiContext(options))
             {
                 ctx.Samurais.Update(samuraiGraph);
+                Assert.NotEmpty(ctx.ChangeTracker.Entries());
                 Assert.True(ctx.ChangeTracker.Entries().All(e => e.State == EntityState.Modified));
             }
         }
@@ -799,7 +803,9 @@ namespace SamuraiAppCore.Test
                 // This behavior is different from the SQL Server provider
                 // In the SQL Server provider exception raises, but this In-Memory Provider doesn't
                 ctx.Samurais.Remove(samuraiGraph);
+                Assert.NotEmpty(ctx.ChangeTracker.Entries<Samurai>());
                 Assert.True(ctx.ChangeTracker.Entries<Samurai>().All(e => e.State == EntityState.Deleted));
+                Assert.NotEmpty(ctx.ChangeTracker.Entries<Quote>());
                 Assert.True(ctx.ChangeTracker.Entries<Quote>().All(e => e.State == EntityState.Added));
             }
         }
@@ -812,8 +818,122 @@ namespace SamuraiAppCore.Test
             using (var ctx = new SamuraiContext(options))
             {
                 ctx.Samurais.Remove(samuraiGraph);
+                Assert.NotEmpty(ctx.ChangeTracker.Entries<Samurai>());
                 Assert.True(ctx.ChangeTracker.Entries<Samurai>().All(e => e.State == EntityState.Deleted));
+                Assert.NotEmpty(ctx.ChangeTracker.Entries<Quote>());
                 Assert.True(ctx.ChangeTracker.Entries<Quote>().All(e => e.State == EntityState.Unchanged));
+            }
+        }
+
+        [Fact]
+        public void CouldAddGraphViaEntryAllNew()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie" };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new" });
+            using (var ctx = new SamuraiContext(options))
+            {
+                ctx.Entry(samuraiGraph).State = EntityState.Added;
+                Assert.NotEmpty(ctx.ChangeTracker.Entries<Samurai>());
+                Assert.True(ctx.ChangeTracker.Entries<Samurai>().All(e => e.State == EntityState.Added));
+                Assert.Empty(ctx.ChangeTracker.Entries<Quote>());
+            }
+        }
+
+        [Fact]
+        public void CouldAddGraphViaEntryWithKeyValues()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new", Id = 1 });
+            using (var ctx = new SamuraiContext(options))
+            {
+                ctx.Entry(samuraiGraph).State = EntityState.Added;
+                Assert.NotEmpty(ctx.ChangeTracker.Entries<Samurai>());
+                Assert.True(ctx.ChangeTracker.Entries<Samurai>().All(e => e.State == EntityState.Added));
+                Assert.Empty(ctx.ChangeTracker.Entries<Quote>());
+            }
+        }
+
+        [Fact]
+        public void CouldAttachGraphViaEntryAllNew()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie" };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new" });
+            using (var ctx = new SamuraiContext(options))
+            {
+                ctx.Entry(samuraiGraph).State = EntityState.Unchanged;
+                Assert.NotEmpty(ctx.ChangeTracker.Entries<Samurai>());
+                Assert.True(ctx.ChangeTracker.Entries<Samurai>().All(e => e.State == EntityState.Unchanged));
+                Assert.Empty(ctx.ChangeTracker.Entries<Quote>());
+            }
+        }
+
+        [Fact]
+        public void CouldAttachGraphViaEntryWithKeyValues()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new", Id = 1 });
+            using (var ctx = new SamuraiContext(options))
+            {
+                ctx.Entry(samuraiGraph).State = EntityState.Unchanged;
+                Assert.NotEmpty(ctx.ChangeTracker.Entries<Samurai>());
+                Assert.True(ctx.ChangeTracker.Entries<Samurai>().All(e => e.State == EntityState.Unchanged));
+                Assert.Empty(ctx.ChangeTracker.Entries<Quote>());
+            }
+        }
+
+        [Fact]
+        public void CouldUpdateGraphViaEntryAllNew()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie" };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new" });
+            using (var ctx = new SamuraiContext(options))
+            {
+                ctx.Entry(samuraiGraph).State = EntityState.Modified;
+                Assert.NotEmpty(ctx.ChangeTracker.Entries<Samurai>());
+                Assert.True(ctx.ChangeTracker.Entries<Samurai>().All(e => e.State == EntityState.Modified));
+                Assert.Empty(ctx.ChangeTracker.Entries<Quote>());
+            }
+        }
+
+        [Fact]
+        public void CouldUpdateGraphViaEntryWithKeyValues()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new", Id = 1 });
+            using (var ctx = new SamuraiContext(options))
+            {
+                ctx.Entry(samuraiGraph).State = EntityState.Modified;
+                Assert.NotEmpty(ctx.ChangeTracker.Entries<Samurai>());
+                Assert.True(ctx.ChangeTracker.Entries<Samurai>().All(e => e.State == EntityState.Modified));
+                Assert.Empty(ctx.ChangeTracker.Entries<Quote>());
+            }
+        }
+
+        [Fact]
+        public void CouldDeleteGraphViaEntryAllNew()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie" };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new" });
+            using (var ctx = new SamuraiContext(options))
+            {
+                ctx.Entry(samuraiGraph).State = EntityState.Deleted;
+                Assert.NotEmpty(ctx.ChangeTracker.Entries<Samurai>());
+                Assert.True(ctx.ChangeTracker.Entries<Samurai>().All(e => e.State == EntityState.Deleted));
+                Assert.Empty(ctx.ChangeTracker.Entries<Quote>());
+            }
+        }
+
+        [Fact]
+        public void CouldDeleteGraphViaEntryWithKeyValues()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new", Id = 1 });
+            using (var ctx = new SamuraiContext(options))
+            {
+                ctx.Entry(samuraiGraph).State = EntityState.Deleted;
+                Assert.NotEmpty(ctx.ChangeTracker.Entries<Samurai>());
+                Assert.True(ctx.ChangeTracker.Entries<Samurai>().All(e => e.State == EntityState.Deleted));
+                Assert.Empty(ctx.ChangeTracker.Entries<Quote>());
             }
         }
     }
