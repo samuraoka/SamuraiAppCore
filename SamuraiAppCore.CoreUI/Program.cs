@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SamuraiAppCore.Data;
 using SamuraiAppCore.Domain;
 using System;
@@ -43,7 +44,15 @@ namespace SamuraiAppCore.CoreUI
                 //await FilteredEagerLoadViaProjectionNopeAsync();
                 //await ExplicitLoadAsync();
                 //await ExplicitLoadWithChildFilter();
-                await UsingRelatedDataForFiltersAndMore();
+                //await UsingRelatedDataForFiltersAndMore();
+                AddGraphAllNew();
+                AddGraphWithKeyValues();
+                AttachGraphAllNew();
+                AttachGraphWithKeyValues();
+                UpdateGraphAllNew();
+                UpdateGraphWithKeyValues();
+                DeleteGraphAllNew();
+                DeleteGraphWithKeyValues();
             }
             Context = null;
         }
@@ -303,6 +312,118 @@ namespace SamuraiAppCore.CoreUI
             var samurais = await Context.Samurais
                 .Where(s => s.Quotes.Any(q => q.Text.Contains("happy")))
                 .ToListAsync();
+        }
+
+        public static void DisplayState(List<EntityEntry> es, string method)
+        {
+            Console.WriteLine(method);
+            es.ForEach(e => Console.WriteLine(
+                $"{e.Entity.GetType().Name} : {e.State.ToString()}"));
+            Console.WriteLine();
+        }
+
+        public static void AddGraphAllNew()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie" };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new" });
+            using (var context = new SamuraiContext())
+            {
+                context.Samurais.Add(samuraiGraph);
+                var es = context.ChangeTracker.Entries().ToList();
+                DisplayState(es, "AddGraphAllNew");
+            }
+        }
+
+        public static void AddGraphWithKeyValues()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new", Id = 1 });
+            using (var context = new SamuraiContext())
+            {
+                context.Samurais.Add(samuraiGraph);
+                var es = context.ChangeTracker.Entries().ToList();
+                DisplayState(es, "AddGraphWithKeyValues");
+            }
+        }
+
+        public static void AttachGraphAllNew()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie" };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new" });
+            using (var context = new SamuraiContext())
+            {
+                context.Samurais.Attach(samuraiGraph);
+                var es = context.ChangeTracker.Entries().ToList();
+                DisplayState(es, "AttachGraphAllNew");
+            }
+        }
+
+        public static void AttachGraphWithKeyValues()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new", Id = 1 });
+            using (var context = new SamuraiContext())
+            {
+                context.Samurais.Attach(samuraiGraph);
+                var es = context.ChangeTracker.Entries().ToList();
+                DisplayState(es, "AttachGraphWithKeyValues");
+            }
+        }
+
+        private static void UpdateGraphAllNew()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie" };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new" });
+            using (var context = new SamuraiContext())
+            {
+                context.Samurais.Update(samuraiGraph);
+                var es = context.ChangeTracker.Entries().ToList();
+                DisplayState(es, "UpdateGraphAllNew");
+            }
+        }
+
+        private static void UpdateGraphWithKeyValues()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new", Id = 1 });
+            using (var context = new SamuraiContext())
+            {
+                context.Samurais.Update(samuraiGraph);
+                var es = context.ChangeTracker.Entries().ToList();
+                DisplayState(es, "UpdateGraphWithKeyValues");
+            }
+        }
+
+        private static void DeleteGraphAllNew()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie" };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new" });
+            using (var context = new SamuraiContext())
+            {
+                try
+                {
+                    context.Samurais.Remove(samuraiGraph);
+                    var es = context.ChangeTracker.Entries().ToList();
+                    DisplayState(es, "DeleteGraphAllNew");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Console.WriteLine(ex);
+                    Console.WriteLine();
+                }
+            }
+        }
+
+        private static void DeleteGraphWithKeyValues()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new", Id = 1 });
+            using (var context = new SamuraiContext())
+            {
+                context.Samurais.Remove(samuraiGraph);
+                var es = context.ChangeTracker.Entries().ToList();
+                DisplayState(es, "DeleteGraphWithKeyValues");
+            }
         }
     }
 }
