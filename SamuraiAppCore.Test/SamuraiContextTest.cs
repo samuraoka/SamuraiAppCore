@@ -936,5 +936,25 @@ namespace SamuraiAppCore.Test
                 Assert.Empty(ctx.ChangeTracker.Entries<Quote>());
             }
         }
+
+        [Fact]
+        public void ShouldChangeStateUsingEntry()
+        {
+            var samurai = new Samurai { Name = "She Who Changes State", Id = 1 };
+
+            using (var ctx = new SamuraiContext(options))
+            {
+                Assert.Empty(ctx.ChangeTracker.Entries());
+
+                ctx.Entry(samurai).State = EntityState.Modified;
+                Assert.True(ctx.ChangeTracker.Entries().All(e => e.State == EntityState.Modified));
+
+                ctx.Entry(samurai).State = EntityState.Added;
+                Assert.True(ctx.ChangeTracker.Entries().All(e => e.State == EntityState.Added));
+
+                // An exception happens because an entity with key value is going to be inserted
+                Assert.Throws<DbUpdateException>(() => ctx.SaveChanges());
+            }
+        }
     }
 }

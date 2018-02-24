@@ -53,14 +53,15 @@ namespace SamuraiAppCore.CoreUI
                 //UpdateGraphWithKeyValues();
                 //DeleteGraphAllNew();
                 //DeleteGraphWithKeyValues();
-                AddGraphViaEntryAllNew();
-                AddGraphViaEntryWithKeyValues();
-                AttachGraphViaEntryAllNew();
-                AttachGraphViaEntryWithKeyValues();
-                UpdateGraphViaEntryAllNew();
-                UpdateGraphViaEntryWithKeyValues();
-                DeleteGraphViaEntryAllNew();
-                DeleteGraphViaEntryWithKeyValues();
+                //AddGraphViaEntryAllNew();
+                //AddGraphViaEntryWithKeyValues();
+                //AttachGraphViaEntryAllNew();
+                //AttachGraphViaEntryWithKeyValues();
+                //UpdateGraphViaEntryAllNew();
+                //UpdateGraphViaEntryWithKeyValues();
+                //DeleteGraphViaEntryAllNew();
+                //DeleteGraphViaEntryWithKeyValues();
+                ChangeStateUsingEntry();
             }
             Context = null;
         }
@@ -527,6 +528,21 @@ namespace SamuraiAppCore.CoreUI
                 ctx.Entry(samuraiGraph).State = EntityState.Deleted;
                 var es = ctx.ChangeTracker.Entries().ToList();
                 DisplayState(es, "DeleteGraphViaEntryWithKeyValues");
+            }
+        }
+
+        public static void ChangeStateUsingEntry()
+        {
+            var samurai = new Samurai { Name = "She Who Changes State", Id = 1 };
+            using (var ctx = new SamuraiContext())
+            {
+                ctx.Entry(samurai).State = EntityState.Modified;
+                Console.WriteLine("Change State Using Entry");
+                DisplayState(ctx.ChangeTracker.Entries().ToList(), "Initial State");
+
+                ctx.Entry(samurai).State = EntityState.Added;
+                DisplayState(ctx.ChangeTracker.Entries().ToList(), "New State");
+                ctx.SaveChanges();
             }
         }
     }
