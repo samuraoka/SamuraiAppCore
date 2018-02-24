@@ -42,7 +42,8 @@ namespace SamuraiAppCore.CoreUI
                 //await EagerLoadViaProjectionNotQuiteAsync();
                 //await FilteredEagerLoadViaProjectionNopeAsync();
                 //await ExplicitLoadAsync();
-                await ExplicitLoadWithChildFilter();
+                //await ExplicitLoadWithChildFilter();
+                await UsingRelatedDataForFiltersAndMore();
             }
             Context = null;
         }
@@ -291,6 +292,17 @@ namespace SamuraiAppCore.CoreUI
                     .LoadAsync();
             }
 
+        }
+
+        private static async Task UsingRelatedDataForFiltersAndMore()
+        {
+            // Insert samurai and quotes for subsequent processing
+            await InsertNewPkFkGraphAsync();
+            await AddChildToExistingObjectAsync();
+
+            var samurais = await Context.Samurais
+                .Where(s => s.Quotes.Any(q => q.Text.Contains("happy")))
+                .ToListAsync();
         }
     }
 }

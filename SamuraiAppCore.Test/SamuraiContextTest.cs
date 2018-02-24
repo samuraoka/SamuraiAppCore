@@ -693,5 +693,28 @@ namespace SamuraiAppCore.Test
             }
         }
 
+        [Fact]
+        public void CouldUsingRelatedDataForFiltersAndMore()
+        {
+            using (var ctx = new SamuraiContext(options))
+            {
+                Program.Context = ctx;
+                Program.InsertNewPkFkGraphAsync().Wait();
+                Program.AddChildToExistingObjectAsync().Wait();
+            }
+
+            using (var ctx = new SamuraiContext(options))
+            {
+                // There is two samurai in the database.
+                // Where method filters out one samurai.
+                // So the result contains only one samurai.
+                var samurais = ctx.Samurais
+                    .Where(s => s.Quotes.Any(q => q.Text.Contains("happy")))
+                    .ToList();
+
+                Assert.Single(samurais);
+            }
+        }
+
     }
 }
