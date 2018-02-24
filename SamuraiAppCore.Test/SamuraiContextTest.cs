@@ -952,8 +952,130 @@ namespace SamuraiAppCore.Test
                 ctx.Entry(samurai).State = EntityState.Added;
                 Assert.True(ctx.ChangeTracker.Entries().All(e => e.State == EntityState.Added));
 
-                // An exception happens because an entity with key value is going to be inserted
-                Assert.Throws<DbUpdateException>(() => ctx.SaveChanges());
+                ctx.SaveChanges();
+                Assert.Equal(EntityState.Unchanged, ctx.Entry(samurai).State);
+            }
+        }
+
+        [Fact]
+        public void ShouldAddGraphViaTrackGraphAllNew()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie" };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new" });
+            using (var ctx = new SamuraiContext())
+            {
+                ctx.ChangeTracker.TrackGraph(samuraiGraph, node => node.Entry.State = EntityState.Added);
+                Assert.Equal(2, ctx.ChangeTracker.Entries().Count());
+                Assert.True(ctx.ChangeTracker.Entries().All(e => e.State == EntityState.Added));
+            }
+        }
+
+        [Fact]
+        public void ShouldAddGraphViaTrackGraphWithKeyValues()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new", Id = 1 });
+            using (var ctx = new SamuraiContext())
+            {
+                ctx.ChangeTracker.TrackGraph(samuraiGraph, node => node.Entry.State = EntityState.Added);
+                Assert.Equal(2, ctx.ChangeTracker.Entries().Count());
+                Assert.True(ctx.ChangeTracker.Entries().All(e => e.State == EntityState.Added));
+            }
+        }
+
+        [Fact]
+        public void ShouldAttachGraphViaTrackGraphAllNew()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie" };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new" });
+            using (var ctx = new SamuraiContext())
+            {
+                ctx.ChangeTracker.TrackGraph(samuraiGraph, node => node.Entry.State = EntityState.Unchanged);
+                Assert.Equal(2, ctx.ChangeTracker.Entries().Count());
+                Assert.True(ctx.ChangeTracker.Entries().All(e => e.State == EntityState.Unchanged));
+            }
+        }
+
+        [Fact]
+        public void ShouldAttachGraphViaTrackGraphWithKeyValues()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new", Id = 1 });
+            using (var ctx = new SamuraiContext())
+            {
+                ctx.ChangeTracker.TrackGraph(samuraiGraph, node => node.Entry.State = EntityState.Unchanged);
+                Assert.Equal(2, ctx.ChangeTracker.Entries().Count());
+                Assert.True(ctx.ChangeTracker.Entries().All(e => e.State == EntityState.Unchanged));
+            }
+        }
+
+        [Fact]
+        public void ShouldUpdateGraphViaTrackGraphAllNew()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie" };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new" });
+            using (var ctx = new SamuraiContext())
+            {
+                ctx.ChangeTracker.TrackGraph(samuraiGraph, node => node.Entry.State = EntityState.Modified);
+                Assert.Equal(2, ctx.ChangeTracker.Entries().Count());
+                Assert.True(ctx.ChangeTracker.Entries().All(e => e.State == EntityState.Modified));
+            }
+        }
+
+        [Fact]
+        public void ShouldUpdateGraphViaTrackGraphWithKeyValues()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new", Id = 1 });
+            using (var ctx = new SamuraiContext())
+            {
+                ctx.ChangeTracker.TrackGraph(samuraiGraph, node => node.Entry.State = EntityState.Modified);
+                Assert.Equal(2, ctx.ChangeTracker.Entries().Count());
+                Assert.True(ctx.ChangeTracker.Entries().All(e => e.State == EntityState.Modified));
+            }
+        }
+
+        [Fact]
+        public void ShouldDeleteGraphViaTrackGraphAllNew()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie" };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new" });
+            using (var ctx = new SamuraiContext())
+            {
+                ctx.ChangeTracker.TrackGraph(samuraiGraph, node => node.Entry.State = EntityState.Deleted);
+                Assert.Equal(2, ctx.ChangeTracker.Entries().Count());
+                Assert.True(ctx.ChangeTracker.Entries().All(e => e.State == EntityState.Deleted));
+            }
+        }
+
+        [Fact]
+        public void ShouldDeleteGraphViaTrackGraphWithKeyValues()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new", Id = 1 });
+            using (var ctx = new SamuraiContext())
+            {
+                ctx.ChangeTracker.TrackGraph(samuraiGraph, node => node.Entry.State = EntityState.Deleted);
+                Assert.Equal(2, ctx.ChangeTracker.Entries().Count());
+                Assert.True(ctx.ChangeTracker.Entries().All(e => e.State == EntityState.Deleted));
+            }
+        }
+
+        [Fact]
+        public void ShouldStartTrackingUsingCustomFunction()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            var quote = new Quote { Text = "This is new" };
+            samuraiGraph.Quotes.Add(quote);
+            using (var context = new SamuraiContext())
+            {
+                context.ChangeTracker.TrackGraph(samuraiGraph, node => Program.ApplyStateUsingIsKeySet(node.Entry));
+
+                Assert.NotEmpty(context.ChangeTracker.Entries<Samurai>());
+                Assert.Equal(EntityState.Unchanged, context.Entry(samuraiGraph).State);
+
+                Assert.NotEmpty(context.ChangeTracker.Entries<Quote>());
+                Assert.Equal(EntityState.Added, context.Entry(quote).State);
             }
         }
     }

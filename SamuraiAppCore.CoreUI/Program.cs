@@ -61,7 +61,16 @@ namespace SamuraiAppCore.CoreUI
                 //UpdateGraphViaEntryWithKeyValues();
                 //DeleteGraphViaEntryAllNew();
                 //DeleteGraphViaEntryWithKeyValues();
-                ChangeStateUsingEntry();
+                //ChangeStateUsingEntry();
+                //AddGraphViaTrackGraphAllNew();
+                //AddGraphViaTrackGraphWithKeyValues();
+                //AttachGraphViaTrackGraphAllNew();
+                //AttachGraphViaTrackGraphWithKeyValues();
+                //UpdateGraphViaTrackGraphAllNew();
+                //UpdateGraphViaTrackGraphWithKeyValues();
+                //DeleteGraphViaTrackGraphAllNew();
+                //DeleteGraphViaTrackGraphWithKeyValues();
+                StartTrackingUsingCustomFunction();
             }
             Context = null;
         }
@@ -543,6 +552,126 @@ namespace SamuraiAppCore.CoreUI
                 ctx.Entry(samurai).State = EntityState.Added;
                 DisplayState(ctx.ChangeTracker.Entries().ToList(), "New State");
                 ctx.SaveChanges();
+            }
+        }
+
+        private static void AddGraphViaTrackGraphAllNew()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie" };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new" });
+            using (var ctx = new SamuraiContext())
+            {
+                ctx.ChangeTracker.TrackGraph(samuraiGraph, e => e.Entry.State = EntityState.Added);
+                var es = ctx.ChangeTracker.Entries().ToList();
+                DisplayState(es, "AddGraphViaTrackGraphAllNew");
+            }
+        }
+
+        private static void AddGraphViaTrackGraphWithKeyValues()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new", Id = 1 });
+            using (var ctx = new SamuraiContext())
+            {
+                ctx.ChangeTracker.TrackGraph(samuraiGraph, e => e.Entry.State = EntityState.Added);
+                var es = ctx.ChangeTracker.Entries().ToList();
+                DisplayState(es, "AddGraphViaTrackGraphWithKeyValues");
+            }
+        }
+
+        private static void AttachGraphViaTrackGraphAllNew()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie" };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new" });
+            using (var ctx = new SamuraiContext())
+            {
+                ctx.ChangeTracker.TrackGraph(samuraiGraph, e => e.Entry.State = EntityState.Unchanged);
+                var es = ctx.ChangeTracker.Entries().ToList();
+                DisplayState(es, "AttachGraphViaTrackGraphAllNew");
+            }
+        }
+
+        private static void AttachGraphViaTrackGraphWithKeyValues()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new", Id = 1 });
+            using (var ctx = new SamuraiContext())
+            {
+                ctx.ChangeTracker.TrackGraph(samuraiGraph, e => e.Entry.State = EntityState.Unchanged);
+                var es = ctx.ChangeTracker.Entries().ToList();
+                DisplayState(es, "AttachGraphViaTrackGraphWithKeyValues");
+            }
+        }
+
+        private static void UpdateGraphViaTrackGraphAllNew()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie" };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new" });
+            using (var ctx = new SamuraiContext())
+            {
+                ctx.ChangeTracker.TrackGraph(samuraiGraph, e => e.Entry.State = EntityState.Modified);
+                var es = ctx.ChangeTracker.Entries().ToList();
+                DisplayState(es, "UpdateGraphViaTrackGraphAllNew");
+            }
+        }
+
+        private static void UpdateGraphViaTrackGraphWithKeyValues()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new", Id = 1 });
+            using (var ctx = new SamuraiContext())
+            {
+                ctx.ChangeTracker.TrackGraph(samuraiGraph, e => e.Entry.State = EntityState.Modified);
+                var es = ctx.ChangeTracker.Entries().ToList();
+                DisplayState(es, "UpdateGraphViaTrackGraphWithKeyValues");
+            }
+        }
+
+        private static void DeleteGraphViaTrackGraphAllNew()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie" };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new" });
+            using (var ctx = new SamuraiContext())
+            {
+                ctx.ChangeTracker.TrackGraph(samuraiGraph, e => e.Entry.State = EntityState.Deleted);
+                var es = ctx.ChangeTracker.Entries().ToList();
+                DisplayState(es, "DeleteGraphViaTrackGraphAllNew");
+            }
+        }
+
+        private static void DeleteGraphViaTrackGraphWithKeyValues()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new", Id = 1 });
+            using (var ctx = new SamuraiContext())
+            {
+                ctx.ChangeTracker.TrackGraph(samuraiGraph, e => e.Entry.State = EntityState.Deleted);
+                var es = ctx.ChangeTracker.Entries().ToList();
+                DisplayState(es, "DeleteGraphViaTrackGraphWithKeyValues");
+            }
+        }
+
+        private static void StartTrackingUsingCustomFunction()
+        {
+            var samuraiGraph = new Samurai { Name = "Julie", Id = 1 };
+            samuraiGraph.Quotes.Add(new Quote { Text = "This is new" });
+            using (var context = new SamuraiContext())
+            {
+                context.ChangeTracker.TrackGraph(samuraiGraph, node => ApplyStateUsingIsKeySet(node.Entry));
+                var es = context.ChangeTracker.Entries().ToList();
+                DisplayState(es, "StartTrackingUsingCustomFunction");
+            }
+        }
+
+        public static void ApplyStateUsingIsKeySet(EntityEntry entry)
+        {
+            if (entry.IsKeySet)
+            {
+                entry.State = EntityState.Unchanged;
+            }
+            else
+            {
+                entry.State = EntityState.Added;
             }
         }
     }
