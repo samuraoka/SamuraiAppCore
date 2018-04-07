@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using SamuraiAppCore.Domain;
+using System;
+using System.Linq;
 
 namespace SamuraiAppCore.Data
 {
@@ -32,6 +34,9 @@ namespace SamuraiAppCore.Data
     /// 
     /// To add a new migration, execute a following command
     /// PM> Add-Migration -Name AddedSamuraiBattlesToContext -Context SamuraiContext -Project SamuraiAppCore.Data -StartupProject SamuraiAppCore.CoreUI
+    /// 
+    /// To add a new migration, execute a following command
+    /// PM> Add-Migration -Name ShadowProperty -Context SamuraiContext -Project SamuraiAppCore.Data -StartupProject SamuraiAppCore.CoreUI
     /// </summary>
     public class SamuraiContext : DbContext
     {
@@ -78,7 +83,7 @@ namespace SamuraiAppCore.Data
             // https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory#avoid-configuring-two-database-providers
             if (optionsBuilder.IsConfigured == false)
             {
-                var connectionString = @"Server=(LocalDB)\MSSQLLocalDB;Integrated Security=true;Database=SamuraiRelatedDataCore;AttachDbFileName=E:\sato\MSSQLLocalDB\SamuraiDataCore\SamuraiRelatedDataCore.mdf";
+                var connectionString = @"Server=(LocalDB)\MSSQLLocalDB;Integrated Security=true;Database=SamuraiWpfData;AttachDbFileName=E:\sato\MSSQLLocalDB\SamuraiDataCore\SamuraiWpfData.mdf";
                 optionsBuilder.UseSqlServer(connectionString, options => options.MaxBatchSize(30));
             }
 
@@ -99,6 +104,24 @@ namespace SamuraiAppCore.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SamuraiBattle>().HasKey(sb => new { sb.SamuraiId, sb.BattleId });
+
+            // Shadow Properties
+            // https://docs.microsoft.com/en-us/ef/core/modeling/shadow-properties
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                modelBuilder.Entity(entityType.Name).Property<DateTime>("LastModified");
+                modelBuilder.Entity(entityType.Name).Ignore("IsDirty");
+            }
+        }
+
+        public override int SaveChanges()
+        {
+            foreach (var entry in ChangeTracker.Entries()
+                .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified))
+            {
+                entry.Property("LastModified").CurrentValue = DateTime.Now;
+            }
+            return base.SaveChanges();
         }
     }
 }
