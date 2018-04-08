@@ -1,6 +1,7 @@
 ﻿using SamuraiAppCore.Data;
 using SamuraiAppCore.Domain;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace SamuraiAppCore.Wpf
@@ -40,12 +41,20 @@ namespace SamuraiAppCore.Wpf
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
-            //TDOO
+            _repo.SaveChanges(_currentSamurai.GetType());
         }
 
         private void realNameTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            //TODO
+            if (_isLoading == false && _isListChanging == false)
+            {
+                if (_currentSamurai.SecretIdentity == null)
+                {
+                    _currentSamurai.SecretIdentity = new SecretIdentity();
+                }
+                _currentSamurai.SecretIdentity.RealName = ((TextBox)sender).Text;
+                _currentSamurai.IsDirty = true;
+            }
         }
 
         private void newButton_Click(object sender, RoutedEventArgs e)

@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using SamuraiAppCore.Domain;
+﻿using SamuraiAppCore.Domain;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -44,14 +43,30 @@ namespace SamuraiAppCore.Data
 
         public void SaveChanges(Type typeBeingEdited)
         {
-            // TODO
-            throw new NotImplementedException();
+            _context.SaveChanges();
+            if (typeBeingEdited == typeof(Samurai))
+            {
+                if (_context.Samurais.Local.Any())
+                {
+                    SamuraisListInMemory().ToList().ForEach(s => s.IsDirty = false);
+                }
+            }
+            if (typeBeingEdited == typeof(Battle))
+            {
+                if (_context.Battles.Local.Any())
+                {
+                    BattlesListInMemory().ToList().ForEach(b => b.IsDirty = false);
+                }
+            }
         }
 
-        public LocalView<Battle> BattlesListInMemory()
+        public ObservableCollection<Battle> BattlesListInMemory()
         {
-            // TODO
-            throw new NotImplementedException();
+            if (_context.Battles.Local.Count == 0)
+            {
+                _context.Battles.ToList();
+            }
+            return _context.Battles.Local.ToObservableCollection();
         }
 
         public List<Samurai> SamuraisNotInBattle(int battleId)
