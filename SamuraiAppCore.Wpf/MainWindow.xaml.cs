@@ -20,10 +20,10 @@ namespace SamuraiAppCore.Wpf
         {
             _isLoading = true;
             samuraiListBox.ItemsSource = _repo.SamuraisListInMemory();
-            //TODO _samuraiViewSource = (ObjectDataProvider)FindResource("SamuraiViewSource");
+            // TODO _samuraiViewSource = (ObjectDataProvider)FindResource("SamuraiViewSource");
             _isLoading = false;
             samuraiListBox.SelectedIndex = 0;
-            System.Windows.Data.CollectionViewSource samuraiViewSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("samuraiViewSource")));
+            // TODO System.Windows.Data.CollectionViewSource samuraiViewSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("samuraiViewSource")));
             // Load data by setting the CollectionViewSource.Source property:
             // samuraiViewSource.Source = [generic data source]
         }
