@@ -19,8 +19,10 @@ namespace SamuraiAppCore.Data
 
         public Samurai CreateNewSamurai()
         {
-            // TODO
-            throw new NotImplementedException();
+            // battles (many to many) will not be involved
+            var samurai = new Samurai { Name = "New Samurai" };
+            _context.Samurais.Add(samurai);
+            return samurai;
         }
 
         public ObservableCollection<Samurai> SamuraisListInMemory()
@@ -34,8 +36,10 @@ namespace SamuraiAppCore.Data
 
         public Samurai LoadSamuraiGraph(int samuraiId)
         {
-            // TODO
-            throw new NotImplementedException();
+            var samurai = _context.Samurais.Find(samuraiId);
+            _context.Entry(samurai).Reference(s => s.SecretIdentity).Load();
+            _context.Entry(samurai).Collection(s => s.Quotes).Load();
+            return samurai;
         }
 
         public void SaveChanges(Type typeBeingEdited)

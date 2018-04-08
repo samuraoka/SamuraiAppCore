@@ -10,6 +10,7 @@
     <Window.Resources>
         <CollectionViewSource x:Key="samuraiViewSource" d:DesignSource="{d:DesignInstance {x:Type Domain:Samurai}, CreateList=True}"/>
         <CollectionViewSource x:Key="samuraiQuotesViewSource" Source="{Binding Quotes, Source={StaticResource samuraiViewSource}}"/>
+        <ObjectDataProvider x:Key="samuraiDataProvider"/>
     </Window.Resources>
     <Grid HorizontalAlignment="Left" Margin="0,10,0,0" Width="739" DataContext="{StaticResource samuraiViewSource}">
         <ListBox x:Name="samuraiListBox" DisplayMemberPath="Name" Margin="23,10,0,0"
@@ -32,7 +33,8 @@
         <Button x:Name="newButton" Content="Create New Samurai" HorizontalAlignment="Left" Margin="528,10,0,0"
                 VerticalAlignment="Top" Width="165" HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Top" Click="newButton_Click"/>
-        <Grid HorizontalAlignment="Left" Margin="55,200,0,0" VerticalAlignment="Top" Width="462">
+        <Grid HorizontalAlignment="Left" Margin="55,200,0,0" VerticalAlignment="Top" Width="462"
+              DataContext="{StaticResource samuraiDataProvider}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>

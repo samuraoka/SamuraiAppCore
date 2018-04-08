@@ -1,4 +1,5 @@
 ﻿using SamuraiAppCore.Data;
+using SamuraiAppCore.Domain;
 using System.Windows;
 using System.Windows.Data;
 
@@ -7,9 +8,10 @@ namespace SamuraiAppCore.Wpf
     public partial class MainWindow : Window
     {
         private readonly ConnectedData _repo = new ConnectedData();
-        // TODO
+        private Samurai _currentSamurai;
+        private bool _isListChanging;
         private bool _isLoading;
-        private ObjectDataProvider _samuraiViewSource;
+        private ObjectDataProvider _samuraiDataProvider;
 
         public MainWindow()
         {
@@ -20,17 +22,20 @@ namespace SamuraiAppCore.Wpf
         {
             _isLoading = true;
             samuraiListBox.ItemsSource = _repo.SamuraisListInMemory();
-            // TODO _samuraiViewSource = (ObjectDataProvider)FindResource("SamuraiViewSource");
+            _samuraiDataProvider = (ObjectDataProvider)FindResource("samuraiDataProvider");
             _isLoading = false;
             samuraiListBox.SelectedIndex = 0;
-            // TODO System.Windows.Data.CollectionViewSource samuraiViewSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("samuraiViewSource")));
-            // Load data by setting the CollectionViewSource.Source property:
-            // samuraiViewSource.Source = [generic data source]
         }
 
         private void samuraiListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            //TODO
+            if (_isLoading == false)
+            {
+                _isListChanging = true;
+                _currentSamurai = _repo.LoadSamuraiGraph((int)samuraiListBox.SelectedValue);
+                _samuraiDataProvider.ObjectInstance = _currentSamurai;
+                _isListChanging = false;
+            }
         }
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
@@ -45,7 +50,9 @@ namespace SamuraiAppCore.Wpf
 
         private void newButton_Click(object sender, RoutedEventArgs e)
         {
-            //TODO
+            _currentSamurai = _repo.CreateNewSamurai();
+            _samuraiDataProvider.ObjectInstance = _currentSamurai;
+            samuraiListBox.SelectedItem = _currentSamurai;
         }
 
         private void nameTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
