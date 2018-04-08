@@ -66,17 +66,25 @@ namespace SamuraiAppCore.Wpf
 
         private void nameTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            //TODO
+            if (_isLoading == false && _isListChanging == false)
+            {
+                _currentSamurai.IsDirty = true;
+            }
         }
 
         private void nameTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            //TODO
+            samuraiListBox.Items.Refresh();
         }
 
         private void quotesDataGrid_CellEditEnding(object sender, System.Windows.Controls.DataGridCellEditEndingEventArgs e)
         {
-            //TODO
+            if (_isLoading == false && _isListChanging == false)
+            {
+                _currentSamurai.IsDirty = true;
+            }
         }
+
+        //TODO relavant to battle
     }
 }
