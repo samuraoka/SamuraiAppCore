@@ -30,7 +30,7 @@ namespace SamuraiAppCore.Data
             {
                 _context.Samurais.ToList();
             }
-            return _context.Samurais.Local.ToObservableCollection(); //TODO check this statement
+            return _context.Samurais.Local.ToObservableCollection();
         }
 
         public Samurai LoadSamuraiGraph(int samuraiId)
@@ -71,31 +71,31 @@ namespace SamuraiAppCore.Data
 
         public List<Samurai> SamuraisNotInBattle(int battleId)
         {
-            // TODO
+            // TODO relavant to battle
             throw new NotImplementedException();
         }
 
         public Battle LoadBattleGraph(int battleId)
         {
-            // TODO
+            // TODO relavant to battle
             throw new NotImplementedException();
         }
 
         public void AddSamuraiBattle(SamuraiBattle samuraiBattle)
         {
-            // TODO
+            // TODO relavant to battle
             throw new NotImplementedException();
         }
 
         public void RevertBattleChanges(int id)
         {
-            // TODO
+            // TODO relavant to battle
             throw new NotImplementedException();
         }
 
         public Battle CreateNewBattle()
         {
-            // TODO
+            // TODO relavant to battle
             throw new NotImplementedException();
         }
     }
