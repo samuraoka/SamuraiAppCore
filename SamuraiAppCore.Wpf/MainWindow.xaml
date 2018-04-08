@@ -16,7 +16,18 @@
         <ListBox x:Name="samuraiListBox" DisplayMemberPath="Name" Margin="23,10,0,0"
                  SelectedValuePath="Id" HorizontalAlignment="Left" Height="143" VerticalAlignment="Top" Width="437"
                  SelectionChanged="samuraiListBox_SelectionChanged">
-            <!--TODO-->
+            <ListBox.Resources>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsDirty}" Value="True">
+                            <Setter Property="Foreground" Value="Red"></Setter>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsDirty}" Value="False">
+                            <Setter Property="Foreground" Value="Black"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.Resources>
         </ListBox>
         <DataGrid x:Name="quotesDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True"
                   ItemsSource="{Binding Source={StaticResource samuraiQuotesViewSource}}"
