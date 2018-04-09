@@ -96,8 +96,9 @@ namespace SamuraiAppCore.Data
 
         public void RevertBattleChanges(int id)
         {
-            // TODO relavant to battle
-            throw new NotImplementedException();
+            // this is the simplest way.
+            // Maybe later version of EF will make it easier
+            _context = new SamuraiContext();
         }
 
         public Battle CreateNewBattle()

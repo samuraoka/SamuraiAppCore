@@ -29,6 +29,11 @@ namespace SamuraiAppCore.Wpf
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            InitializeDataSource();
+        }
+
+        private void InitializeDataSource()
+        {
             _isLoading = true;
             battleListBox.ItemsSource = _repo.BattlesListInMemory();
             _battleViewSource = (ObjectDataProvider)FindResource("battleDataProvider");
@@ -56,8 +61,18 @@ namespace SamuraiAppCore.Wpf
 
         private void ShowSaveBattleMessageBox()
         {
-            //TODO
-            throw new NotImplementedException();
+            switch (MessageBox.Show("Save current battle?", "Battle builder", MessageBoxButton.YesNoCancel))
+            {
+                case MessageBoxResult.Yes:
+                    _repo.SaveChanges(_currentBattle.GetType());
+                    break;
+                case MessageBoxResult.No:
+                    _currentBattle.IsDirty = false;
+                    _repo.RevertBattleChanges(_currentBattle.Id);
+                    break;
+                default:
+                    return;
+            }
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -104,22 +119,28 @@ namespace SamuraiAppCore.Wpf
 
         private void samuraisInBattle_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            //TODO _startPoint = e.GetPosition(null);
+            _startPoint = e.GetPosition(null);
         }
 
         private void samuraisInBattle_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            //TODO GatherSelectedItemForMove(sender, e);
+            GatherSelectedItemForMove(sender, e);
         }
 
         private void samuraisInBattle_DragEnter(object sender, DragEventArgs e)
         {
-            //TODO
+            IgnoreNonSamuraiItem(sender, e);
         }
 
-        private void samuraisNotInBattle_Drop(object sender, DragEventArgs e)
+        private void RemoveDroppedSamuraiFromBattle(object sender, DragEventArgs e)
         {
-            //TODO
+            if (e.Data.GetDataPresent(typeof(SamuraiBattle)))
+            {
+                var samuraiBattle = e.Data.GetData(typeof(SamuraiBattle)) as SamuraiBattle;
+                _currentBattle.SamuraiBattles.Remove(samuraiBattle);
+                _availableSamurais.Add(samuraiBattle.Samurai);
+                NoteSamuraiMove();
+            }
         }
 
         #endregion RemoveSamuraiFromBattle
