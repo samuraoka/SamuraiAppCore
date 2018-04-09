@@ -107,7 +107,11 @@ namespace SamuraiAppCore.Wpf
                     Battle = _currentBattle,
                     Samurai = samurai,
                 };
-                _repo.AddSamuraiBattle(samuraiBattle);
+                samuraiBattle = _repo.AddSamuraiBattle(samuraiBattle);
+                if (_currentBattle.SamuraiBattles.Contains(samuraiBattle) == false)
+                {
+                    _currentBattle.SamuraiBattles.Add(samuraiBattle);
+                }
                 _availableSamurais.Remove(samurai);
                 NoteSamuraiMove();
             }
@@ -137,6 +141,10 @@ namespace SamuraiAppCore.Wpf
             if (e.Data.GetDataPresent(typeof(SamuraiBattle)))
             {
                 var samuraiBattle = e.Data.GetData(typeof(SamuraiBattle)) as SamuraiBattle;
+                if (_repo.IsCommittedSamuraiBattle(samuraiBattle) == false)
+                {
+                    _repo.DetachUnCommittedSamuraiBattle(samuraiBattle);
+                }
                 _currentBattle.SamuraiBattles.Remove(samuraiBattle);
                 _availableSamurais.Add(samuraiBattle.Samurai);
                 NoteSamuraiMove();

@@ -88,10 +88,38 @@ namespace SamuraiAppCore.Data
             return battle;
         }
 
-        public void AddSamuraiBattle(SamuraiBattle samuraiBattle)
+        public SamuraiBattle AddSamuraiBattle(SamuraiBattle samuraiBattle)
         {
             // presumes samurai and battle always already exist
-            _context.Entry(samuraiBattle).State = EntityState.Added;
+            var sb = _context.SamuraiBattles.Find(samuraiBattle.Samurai.Id, samuraiBattle.Battle.Id) ?? samuraiBattle;
+            var entityentry = _context.Entry(sb);
+            if (entityentry.State == EntityState.Detached)
+            {
+                entityentry.State = EntityState.Added;
+            }
+            return sb;
+        }
+
+        public bool IsCommittedSamuraiBattle(SamuraiBattle samuraiBattle)
+        {
+            bool ret = false;
+            var sb = _context.SamuraiBattles.Find(samuraiBattle.SamuraiId, samuraiBattle.BattleId);
+            ret = sb != null;
+            if (sb != null)
+            {
+                var entityEntry = _context.Entry(sb);
+                if (entityEntry.State == EntityState.Added)
+                {
+                    ret = false;
+                }
+            }
+            return ret;
+        }
+
+        public void DetachUnCommittedSamuraiBattle(SamuraiBattle samuraiBattle)
+        {
+            var entityEntry = _context.Entry(samuraiBattle);
+            entityEntry.State = EntityState.Detached;
         }
 
         public void RevertBattleChanges(int id)
