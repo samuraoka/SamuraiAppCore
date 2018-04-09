@@ -73,7 +73,7 @@
             </ListBox.Resources>
         </ListBox>
         <Button x:Name="GotoSamurais" Margin="617,147,0,0" VerticalAlignment="Top"
-                Height="82" RenderTransformOrigin="-0.19,0.22" HorizontalAlignment="Left" Width="84"
+                Height="82" HorizontalAlignment="Left" Width="84"
                 ToolTip="Samurais" Background="{x:Null}" Click="GotoSamurais_Click">
             <Image Height="84" Width="82" Source="Assets/blue samurai.png" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         </Button>
