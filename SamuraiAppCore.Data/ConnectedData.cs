@@ -90,8 +90,8 @@ namespace SamuraiAppCore.Data
 
         public void AddSamuraiBattle(SamuraiBattle samuraiBattle)
         {
-            // TODO relavant to battle
-            throw new NotImplementedException();
+            // presumes samurai and battle always already exist
+            _context.Entry(samuraiBattle).State = EntityState.Added;
         }
 
         public void RevertBattleChanges(int id)

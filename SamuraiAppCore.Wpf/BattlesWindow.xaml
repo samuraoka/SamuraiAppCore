@@ -10,8 +10,8 @@
         Title="Battles" Height="600" Width="760" Loaded="Window_Loaded" FontSize="16">
     <Window.Resources>
         <CollectionViewSource x:Key="battleViewSource" d:DesignSource="{d:DesignInstance {x:Type Domain:Battle}, CreateList=True}"/>
-        <CollectionViewSource x:Key="battleSamuraiBattlesViewSource" Source="{Binding SamuraiBattles, Source={StaticResource battleViewSource}}"/>
         <ObjectDataProvider x:Key="battleDataProvider"/>
+        <CollectionViewSource x:Key="battleSamuraiBattlesViewSource" Source="{Binding SamuraiBattles, Source={StaticResource battleDataProvider}}"/>
     </Window.Resources>
     <Grid DataContext="{StaticResource battleDataProvider}">
         <Image x:Name="image" HorizontalAlignment="Left" Height="82" Margin="617,240,0,0"
@@ -80,12 +80,12 @@
         <ListBox x:Name="samuraisInBattle" DisplayMemberPath="Samurai.Name"
                  ItemsSource="{Binding Source={StaticResource battleSamuraiBattlesViewSource}}"
                  Margin="350,337,105,32" SelectedValuePath="SamuraiId" AllowDrop="True"
-                 Drop="samuraisInBattle_Drop" DragEnter="samuraisInBattle_DragEnter"
+                 Drop="AddDroppedSamuraiToBattle" DragEnter="samuraisInBattle_DragEnter"
                  MouseDown="samuraisInBattle_MouseDown" PreviewMouseMove="samuraisInBattle_PreviewMouseMove"/>
         <ListBox x:Name="samuraisNotInBattle" DisplayMemberPath="Name" HorizontalAlignment="Left" Height="200"
                  Margin="44,337,0,0" VerticalAlignment="Top" Width="271" AllowDrop="True" MouseDown="samuraisNotInBattle_MouseDown"
                  PreviewMouseMove="samuraisNotInBattle_PreviewMouseMove" DragEnter="samuraisNotInBattle_DragEnter"
-                 Drop="samuraisNotInBattle_Drop" />
+                 Drop="samuraisNotInBattle_Drop"/>
         <Label Content="All Samurais" HorizontalAlignment="Left" Margin="41,311,0,0" VerticalAlignment="Top"/>
         <Label Content="Samurais in this Battle" HorizontalAlignment="Left" Margin="350,311,0,0" VerticalAlignment="Top"/>
         <Button Content="Save" HorizontalAlignment="Left" Margin="654,500,0,0" VerticalAlignment="Top" Width="75" Click="SaveButton_Click"/>

@@ -20,7 +20,7 @@ namespace SamuraiAppCore.Wpf
         private Battle _currentBattle;
         private bool _isListChanging;
         private bool _isLoading;
-        //TODO
+        private Point _startPoint;
 
         public BattlesWindow()
         {
@@ -67,41 +67,52 @@ namespace SamuraiAppCore.Wpf
 
         #region AddSamuraiToBattle
 
-        private void samuraisInBattle_MouseDown(object sender, MouseButtonEventArgs e)
+        private void samuraisNotInBattle_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            //TODO
+            _startPoint = e.GetPosition(null);
         }
 
-        private void samuraisInBattle_PreviewMouseMove(object sender, MouseEventArgs e)
+        private void samuraisNotInBattle_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            //TODO
+            GatherSelectedItemForMove(sender, e);
         }
 
-        private void samuraisInBattle_DragEnter(object sender, DragEventArgs e)
+        private void samuraisNotInBattle_DragEnter(object sender, DragEventArgs e)
         {
-            //TODO
+            IgnoreNonSamuraiItem(sender, e);
         }
 
-        private void samuraisInBattle_Drop(object sender, DragEventArgs e)
+        private void AddDroppedSamuraiToBattle(object sender, DragEventArgs e)
         {
-            //TODO
+            if (e.Data.GetDataPresent(typeof(Samurai)))
+            {
+                var samurai = e.Data.GetData(typeof(Samurai)) as Samurai;
+                var samuraiBattle = new SamuraiBattle
+                {
+                    Battle = _currentBattle,
+                    Samurai = samurai,
+                };
+                _repo.AddSamuraiBattle(samuraiBattle);
+                _availableSamurais.Remove(samurai);
+                NoteSamuraiMove();
+            }
         }
 
         #endregion AddSamuraiToBattle
 
         #region RemoveSamuraiFromBattle
 
-        private void samuraisNotInBattle_MouseDown(object sender, MouseButtonEventArgs e)
+        private void samuraisInBattle_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            //TODO
+            //TODO _startPoint = e.GetPosition(null);
         }
 
-        private void samuraisNotInBattle_PreviewMouseMove(object sender, MouseEventArgs e)
+        private void samuraisInBattle_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            //TODO
+            //TODO GatherSelectedItemForMove(sender, e);
         }
 
-        private void samuraisNotInBattle_DragEnter(object sender, DragEventArgs e)
+        private void samuraisInBattle_DragEnter(object sender, DragEventArgs e)
         {
             //TODO
         }
@@ -145,17 +156,36 @@ namespace SamuraiAppCore.Wpf
 
         private void NoteSamuraiMove()
         {
-            //TODO
+            samuraisNotInBattle.Items.Refresh();
+            samuraisInBattle.Items.Refresh();
+            _currentBattle.IsDirty = true;
+            battleListBox.Items.Refresh();
         }
 
         private void GatherSelectedItemForMove(object sender, MouseEventArgs e)
         {
-            //TODO
+            var mousePos = e.GetPosition(null);
+            var diff = _startPoint - mousePos;
+            if (e.LeftButton == MouseButtonState.Pressed &&
+                (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance ||
+                Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance))
+            {
+                var listBox = sender as ListBox;
+                var listBoxItem = listBox.SelectedItem;
+                if (listBoxItem != null)
+                {
+                    DragDrop.DoDragDrop(listBox, listBoxItem, DragDropEffects.Move);
+                }
+            }
         }
 
         private static void IgnoreNonSamuraiItem(object sender, DragEventArgs e)
         {
-            //TODO
+            if (e.Data.GetDataPresent(typeof(Samurai)) == false ||
+                sender == e.Source)
+            {
+                e.Effects = DragDropEffects.None;
+            }
         }
 
         private void NewButton_Click(object sender, RoutedEventArgs e)
