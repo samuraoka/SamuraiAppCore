@@ -85,6 +85,11 @@ namespace SamuraiAppCore.Wpf
             }
         }
 
-        //TODO relavant to battle
+        private void battlesButton_Click(object sender, RoutedEventArgs e)
+        {
+            var battlesWindow = new BattlesWindow();
+            battlesWindow.Show();
+            this.Close();
+        }
     }
 }
