@@ -28,7 +28,7 @@
             <Label Content="Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0" VerticalAlignment="Center"/>
             <TextBox x:Name="nameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="0"
                      Text="{Binding Name, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"
-                     VerticalAlignment="Center" Width="392" TextChanged="nameTextBox_TextChanged"/>
+                     VerticalAlignment="Center" Width="392" TextChanged="nameTextBox_TextChanged" LostFocus="nameTextBox_LostFocus"/>
         </Grid>
         <Grid x:Name="grid2" HorizontalAlignment="Left"
               Margin="18,269,0,0" VerticalAlignment="Top" Width="249">

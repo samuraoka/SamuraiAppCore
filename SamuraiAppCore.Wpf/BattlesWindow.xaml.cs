@@ -115,17 +115,32 @@ namespace SamuraiAppCore.Wpf
 
         private void nameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            //TODO
+            if (_isLoading == false && _isListChanging == false)
+            {
+                _currentBattle.IsDirty = true;
+            }
         }
+
+        private void nameTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            battleListBox.Items.Refresh();
+        }
+
 
         private void startDateDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            //TODO
+            if (_isLoading == false && _isListChanging == false)
+            {
+                _currentBattle.IsDirty = true;
+            }
         }
 
         private void endDateDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            //TODO
+            if (_isLoading == false && _isListChanging == false)
+            {
+                _currentBattle.IsDirty = true;
+            }
         }
 
         private void NoteSamuraiMove()
