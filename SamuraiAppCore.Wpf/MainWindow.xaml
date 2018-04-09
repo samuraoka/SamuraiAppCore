@@ -6,6 +6,7 @@
     xmlns:Domain="clr-namespace:SamuraiAppCore.Domain;assembly=SamuraiAppCore.Domain"
     x:Class="SamuraiAppCore.Wpf.MainWindow"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="600" Width="739" FontSize="16" Loaded="Window_Loaded" HorizontalAlignment="Left" Margin="0,10,0,0">
     <Window.Resources>
         <CollectionViewSource x:Key="samuraiViewSource" d:DesignSource="{d:DesignInstance {x:Type Domain:Samurai}, CreateList=True}"/>
