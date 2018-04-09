@@ -1,17 +1,18 @@
 ﻿<Window
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SamuraiAppCore.Wpf"
-        xmlns:Domain="clr-namespace:SamuraiAppCore.Domain;assembly=SamuraiAppCore.Domain" x:Class="SamuraiAppCore.Wpf.BattlesWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Domain="clr-namespace:SamuraiAppCore.Domain;assembly=SamuraiAppCore.Domain"
+    x:Class="SamuraiAppCore.Wpf.BattlesWindow"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterOwner"
-        Title="Battles" Height="600" Width="760" Loaded="Window_Loaded">
+        WindowStartupLocation="CenterScreen"
+        Title="Battles" Height="600" Width="760" Loaded="Window_Loaded" FontSize="16">
     <Window.Resources>
         <CollectionViewSource x:Key="battleViewSource" d:DesignSource="{d:DesignInstance {x:Type Domain:Battle}, CreateList=True}"/>
+        <CollectionViewSource x:Key="battleSamuraiBattlesViewSource" Source="{Binding SamuraiBattles, Source={StaticResource battleViewSource}}"/>
     </Window.Resources>
-    <Grid>
+    <Grid DataContext="{StaticResource battleViewSource}">
         <Image x:Name="image" HorizontalAlignment="Left" Height="82" Margin="617,240,0,0"
                VerticalAlignment="Top" Width="84" Source="Assets/Explosion_Orange.png"/>
         <Grid x:Name="grid1" DataContext="{StaticResource battleViewSource}" HorizontalAlignment="Left"
@@ -26,7 +27,7 @@
             <Label Content="Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0" VerticalAlignment="Center"/>
             <TextBox x:Name="nameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="0"
                      Text="{Binding Name, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"
-                     VerticalAlignment="Center" Width="392"/>
+                     VerticalAlignment="Center" Width="392" TextChanged="nameTextBox_TextChanged"/>
         </Grid>
         <Grid x:Name="grid2" DataContext="{StaticResource battleViewSource}" HorizontalAlignment="Left"
               Margin="18,269,0,0" VerticalAlignment="Top" Width="249">
@@ -75,5 +76,18 @@
                 ToolTip="Samurais" Background="{x:Null}" Click="GotoSamurais_Click">
             <Image Height="84" Width="82" Source="Assets/blue samurai.png" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         </Button>
+        <ListBox x:Name="samuraisInBattle" DisplayMemberPath="Samurai.Name"
+                 ItemsSource="{Binding Source={StaticResource battleSamuraiBattlesViewSource}}"
+                 Margin="350,337,105,32" SelectedValuePath="SamuraiId" AllowDrop="True"
+                 Drop="samuraisInBattle_Drop" DragEnter="samuraisInBattle_DragEnter"
+                 MouseDown="samuraisInBattle_MouseDown" PreviewMouseMove="samuraisInBattle_PreviewMouseMove"/>
+        <ListBox x:Name="samuraisNotInBattle" DisplayMemberPath="Name" HorizontalAlignment="Left" Height="200"
+                 Margin="44,337,0,0" VerticalAlignment="Top" Width="271" AllowDrop="True" MouseDown="samuraisNotInBattle_MouseDown"
+                 PreviewMouseMove="samuraisNotInBattle_PreviewMouseMove" DragEnter="samuraisNotInBattle_DragEnter"
+                 Drop="samuraisNotInBattle_Drop" />
+        <Label Content="All Samurais" HorizontalAlignment="Left" Margin="41,311,0,0" VerticalAlignment="Top"/>
+        <Label Content="Samurais in this Battle" HorizontalAlignment="Left" Margin="350,311,0,0" VerticalAlignment="Top"/>
+        <Button Content="Save" HorizontalAlignment="Left" Margin="654,500,0,0" VerticalAlignment="Top" Width="75" Click="SaveButton_Click"/>
+        <Button Content="Create New Battle" HorizontalAlignment="Left" Margin="528,10,0,0" VerticalAlignment="Top" Width="165" Click="NewButton_Click"/>
     </Grid>
 </Window>
