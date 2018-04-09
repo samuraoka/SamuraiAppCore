@@ -11,11 +11,12 @@
     <Window.Resources>
         <CollectionViewSource x:Key="battleViewSource" d:DesignSource="{d:DesignInstance {x:Type Domain:Battle}, CreateList=True}"/>
         <CollectionViewSource x:Key="battleSamuraiBattlesViewSource" Source="{Binding SamuraiBattles, Source={StaticResource battleViewSource}}"/>
+        <ObjectDataProvider x:Key="battleDataProvider"/>
     </Window.Resources>
-    <Grid DataContext="{StaticResource battleViewSource}">
+    <Grid DataContext="{StaticResource battleDataProvider}">
         <Image x:Name="image" HorizontalAlignment="Left" Height="82" Margin="617,240,0,0"
                VerticalAlignment="Top" Width="84" Source="Assets/Explosion_Orange.png"/>
-        <Grid x:Name="grid1" DataContext="{StaticResource battleViewSource}" HorizontalAlignment="Left"
+        <Grid x:Name="grid1" HorizontalAlignment="Left"
               Margin="18,220,0,0" VerticalAlignment="Top" Width="468">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -29,7 +30,7 @@
                      Text="{Binding Name, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"
                      VerticalAlignment="Center" Width="392" TextChanged="nameTextBox_TextChanged"/>
         </Grid>
-        <Grid x:Name="grid2" DataContext="{StaticResource battleViewSource}" HorizontalAlignment="Left"
+        <Grid x:Name="grid2" HorizontalAlignment="Left"
               Margin="18,269,0,0" VerticalAlignment="Top" Width="249">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -43,7 +44,7 @@
                         SelectedDate="{Binding StartDate, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"
                         VerticalAlignment="Center" Width="143" SelectedDateChanged="startDateDatePicker_SelectedDateChanged"/>
         </Grid>
-        <Grid x:Name="grid3" DataContext="{StaticResource battleViewSource}" HorizontalAlignment="Left" Margin="272,269,0,0" VerticalAlignment="Top">
+        <Grid x:Name="grid3" HorizontalAlignment="Left" Margin="272,269,0,0" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>

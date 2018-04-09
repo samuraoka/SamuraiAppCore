@@ -1,4 +1,5 @@
-﻿using SamuraiAppCore.Domain;
+﻿using Microsoft.EntityFrameworkCore;
+using SamuraiAppCore.Domain;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -71,14 +72,20 @@ namespace SamuraiAppCore.Data
 
         public List<Samurai> SamuraisNotInBattle(int battleId)
         {
-            // TODO relavant to battle
-            throw new NotImplementedException();
+            var existingSamurais = _context.SamuraiBattles
+                .Where(sb => sb.BattleId == battleId)
+                .Select(sb => sb.SamuraiId).ToList();
+            var samurais = _context.Samurais.AsNoTracking()
+                .Where(s => existingSamurais.Contains(s.Id) == false)
+                .ToList();
+            return samurais;
         }
 
         public Battle LoadBattleGraph(int battleId)
         {
-            // TODO relavant to battle
-            throw new NotImplementedException();
+            var battle = _context.Battles.Find(battleId);
+            _context.Entry(battle).Collection(b => b.SamuraiBattles).Query().Include(sb => sb.Samurai).Load();
+            return battle;
         }
 
         public void AddSamuraiBattle(SamuraiBattle samuraiBattle)
@@ -95,8 +102,10 @@ namespace SamuraiAppCore.Data
 
         public Battle CreateNewBattle()
         {
-            // TODO relavant to battle
-            throw new NotImplementedException();
+            // samurais (many to many) will not be involved
+            var battle = new Battle { Name = "New Battle" };
+            _context.Battles.Add(battle);
+            return battle;
         }
     }
 }
