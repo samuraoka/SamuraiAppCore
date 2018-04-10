@@ -21,6 +21,7 @@ namespace EFCoreUWP.Model
     // Install-Package -Id Microsoft.EntityFrameworkCore.Tools -ProjectName EFCoreUWP.Model
     //
     // Add-Migration -Name Initial -Context BingeContext -Project EFCoreUWP.Model -StartupProject EFCoreUWP.Model
+    // Update-Database -Context BingeContext -Project EFCoreUWP.Model -StartupProject EFCoreUWP.Model
     public class BingeContext : DbContext
     {
         public DbSet<CookieBinge> Binges { get; set; }
