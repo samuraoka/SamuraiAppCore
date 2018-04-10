@@ -16,6 +16,10 @@ namespace EFCoreUWP.Model
     // https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Sqlite/
     // Install-Package -Id Microsoft.EntityFrameworkCore.Sqlite -ProjectName EFCoreUWP.Model
     //
+    // Microsoft.EntityFrameworkCore.Tools
+    // https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Tools/
+    // Install-Package -Id Microsoft.EntityFrameworkCore.Tools -ProjectName EFCoreUWP.Model
+    //
     // Add-Migration -Name Initial -Context BingeContext -Project EFCoreUWP.Model -StartupProject EFCoreUWP.Model
     public class BingeContext : DbContext
     {
