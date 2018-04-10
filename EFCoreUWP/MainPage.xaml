@@ -5,7 +5,7 @@
     xmlns:local="using:EFCoreUWP"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d" Loaded="Page_Loaded">
 
     <Grid x:Name="MainGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
@@ -26,13 +26,13 @@
                             <RowDefinition/>
                             <RowDefinition Height="420"/>
                         </Grid.RowDefinitions>
-                        <Button x:Name="AddCookies" Grid.Row="0" Margin="0,12,0,0" Tapped="AddCookies_Tapped" Visibility="{Binding StartControlsVisibility}" VerticalAlignment="Top" Height="52" Width="52" Padding="4,0" VerticalContentAlignment="Top" Background="{x:Null}">
+                        <Button x:Name="AddCookies" Grid.Row="0" Margin="0,12,0,0" Tapped="Play_Tapped" Visibility="{Binding StartControlsVisibility}" VerticalAlignment="Top" Height="52" Width="52" Padding="4,0" VerticalContentAlignment="Top" Background="{x:Null}">
                             <Image Source="Assets/Go.png" HorizontalAlignment="Left" Height="52" Margin="-6,-2" VerticalAlignment="Top" Width="52"/>
                         </Button>
-                        <Button x:Name="StopHappy" Grid.Row="0" Margin="0,12,57,0" FontSize="16" Visibility="{Binding StopControlsVisibility}" Click="StopHappy_Click" Foreground="#FFD00A0A" HorizontalAlignment="Right" Width="52" Height="52" VerticalAlignment="Bottom" Background="{x:Null}" ToolTipService.ToolTip="Stop Binging. I feel so good!">
+                        <Button x:Name="StopHappy" Grid.Row="0" Margin="0,12,57,0" FontSize="16" Visibility="{Binding StopControlsVisibility}" Click="WorthIt_Click" Foreground="#FFD00A0A" HorizontalAlignment="Right" Width="52" Height="52" VerticalAlignment="Bottom" Background="{x:Null}" ToolTipService.ToolTip="Stop Binging. I feel so good!">
                             <Image Source="Assets/Emoticon_Cool_Blue.png" Margin="-10,-6" Height="52" Width="52"/>
                         </Button>
-                        <Button x:Name="StopGuilt" Margin="0,12,0,0" FontSize="16" Visibility="{Binding StopControlsVisibility}" Click="StopGuilt_Click" Foreground="#FFF1E105" HorizontalAlignment="Right" Width="52" Height="52" Background="{x:Null}" ToolTipService.ToolTip="Stop Binging! I'm gonna explode!">
+                        <Button x:Name="StopGuilt" Margin="0,12,0,0" FontSize="16" Visibility="{Binding StopControlsVisibility}" Click="NotWorthIt_Click" Foreground="#FFF1E105" HorizontalAlignment="Right" Width="52" Height="52" Background="{x:Null}" ToolTipService.ToolTip="Stop Binging! I'm gonna explode!">
                             <Image Source="Assets/Emoticon_Dead_Orange.png" Margin="-10,-6" Width="52" Height="52"/>
                         </Button>
                         <StackPanel Grid.Row="2" Margin="16,0,10,0">
