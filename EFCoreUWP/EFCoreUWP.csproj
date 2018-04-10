@@ -107,6 +107,7 @@
     <None Include="EFCoreUWP_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Checker_Flag_Gray.png" />
     <Content Include="Assets\cookie.png" />
     <Content Include="Assets\Emoticon_Cool_Blue.png" />
     <Content Include="Assets\Emoticon_Dead_Orange.png" />
