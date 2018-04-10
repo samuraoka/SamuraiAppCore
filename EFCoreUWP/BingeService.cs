@@ -36,8 +36,11 @@ namespace EFCoreUWP
 
         public static void ClearHistory()
         {
-            //TODO
-            throw new NotImplementedException();
+            using (var context = new BingeContext())
+            {
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+            }
         }
     }
 }

@@ -20,11 +20,11 @@
         <Pivot x:Name="rootPivot" Title="Cookie Binging" Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,10,0" Grid.RowSpan="2">
             <PivotItem Header="Game" Margin="12,0,10,3">
                 <Grid x:Name="BingePane" Grid.Column="0" BorderThickness="1" BorderBrush="Black">
-                    <Grid x:Name="BingeGrid" Margin="0,1,1,49">
+                    <Grid x:Name="BingeGrid" Margin="0,1,1,49" HorizontalAlignment="Center" VerticalAlignment="Top">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="67"/>
-                            <RowDefinition/>
                             <RowDefinition Height="420"/>
+                            <RowDefinition/>
                         </Grid.RowDefinitions>
                         <Button x:Name="AddCookies" Grid.Row="0" Margin="0,12,0,0" Tapped="Play_Tapped" Visibility="{Binding StartControlsVisibility}" VerticalAlignment="Top" Height="52" Width="52" Padding="4,0" VerticalContentAlignment="Top" Background="{x:Null}">
                             <Image Source="Assets/Go.png" HorizontalAlignment="Left" Height="52" Margin="-6,-2" VerticalAlignment="Top" Width="52"/>
@@ -32,21 +32,21 @@
                         <Button x:Name="StopHappy" Grid.Row="0" Margin="0,12,57,0" FontSize="16" Visibility="{Binding StopControlsVisibility}" Click="WorthIt_Click" Foreground="#FFD00A0A" HorizontalAlignment="Right" Width="52" Height="52" VerticalAlignment="Bottom" Background="{x:Null}" ToolTipService.ToolTip="Stop Binging. I feel so good!">
                             <Image Source="Assets/Emoticon_Cool_Blue.png" Margin="-10,-6" Height="52" Width="52"/>
                         </Button>
-                        <Button x:Name="StopGuilt" Margin="0,12,0,0" FontSize="16" Visibility="{Binding StopControlsVisibility}" Click="NotWorthIt_Click" Foreground="#FFF1E105" HorizontalAlignment="Right" Width="52" Height="52" Background="{x:Null}" ToolTipService.ToolTip="Stop Binging! I'm gonna explode!">
+                        <Button x:Name="StopGuilt" Grid.Row="0" Margin="0,12,0,0" FontSize="16" Visibility="{Binding StopControlsVisibility}" Click="NotWorthIt_Click" Foreground="#FFF1E105" HorizontalAlignment="Right" Width="52" Height="52" Background="{x:Null}" ToolTipService.ToolTip="Stop Binging! I'm gonna explode!">
                             <Image Source="Assets/Emoticon_Dead_Orange.png" Margin="-10,-6" Width="52" Height="52"/>
                         </Button>
-                        <StackPanel Grid.Row="2" Margin="16,0,10,0">
-                            <Grid x:Name="ImageGrid" Grid.Row="1">
+                        <StackPanel Grid.Row="1" Margin="16,0,10,0" Height="420" HorizontalAlignment="Center" VerticalAlignment="Top">
+                            <Grid x:Name="ImageGrid" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="0*"/>
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
-                                <Image x:Name="CookieImage" Source="Assets/cookie.png" Margin="10,0,10,0" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsTapEnabled="True" PointerPressed="CookieImage_PointerPressed" PointerReleased="CookieImage_PointerReleased" Grid.RowSpan="2"/>
+                                <Image x:Name="CookieImage" Source="Assets/cookie.png" Grid.Row="0" Margin="10,0,10,0" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsTapEnabled="True" PointerPressed="CookieImage_PointerPressed" PointerReleased="CookieImage_PointerReleased"/>
                             </Grid>
-                            <StackPanel Orientation="Horizontal" Margin="0,10,10,64">
-                                <TextBlock Margin="0,0,10,0" FontSize="30" Text="Cookies Eaten: " Width="198"/>
-                                <TextBlock FontSize="30" x:Name="ClickCount" Text="{Binding ClickCount}" RenderTransformOrigin="0.5,0.5" Width="83"/>
-                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,10,64">
+                            <TextBlock Margin="0,0,10,0" FontSize="30" Text="Cookies Eaten: " Width="198"/>
+                            <TextBlock FontSize="30" x:Name="ClickCount" Text="{Binding ClickCount}" RenderTransformOrigin="0.5,0.5" Width="83"/>
                         </StackPanel>
                     </Grid>
                     <TextBlock x:Name="NomText" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Nom!" FontSize="16" FontWeight="Bold" Foreground="#FFFBFBFB" Height="28" VerticalAlignment="Top" Width="47" Margin="130,112,0,0"/>
@@ -64,16 +64,16 @@
                                 <Border BorderBrush="White" BorderThickness="2" CornerRadius="10" Padding="5" Margin="5,5,5,0">
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock FontSize="20" Text="Cookies Consumed: " Margin="0,0,10,0"/>
-                                            <TextBlock FontSize="20" Text="{Binding HowMany}"/>
+                                            <TextBlock Foreground="#FFFBFBF8" FontSize="20" Text="Cookies Consumed: " Margin="0,0,10,0"/>
+                                            <TextBlock Foreground="#FFFBFBF8" FontSize="20" Text="{Binding HowMany}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock FontSize="18" Text="When it Happened: " Margin="0,0,5,0"/>
-                                            <TextBlock FontSize="18" Text="{Binding TimeOccurred}"/>
+                                            <TextBlock Foreground="#FFFBFBF8" FontSize="18" Text="When it Happened: " Margin="0,0,5,0"/>
+                                            <TextBlock Foreground="#FFFBFBF8" FontSize="18" Text="{Binding TimeOccurred}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock FontSize="18" Text="Worth it?: " Margin="0,0,5,0"/>
-                                            <TextBlock FontSize="18" Text="{Binding WorthIt}" Margin="0,0,5,0"/>
+                                            <TextBlock Foreground="#FFFBFBF8" FontSize="18" Text="Worth it?: " Margin="0,0,5,0"/>
+                                            <TextBlock Foreground="#FFFBFBF8" FontSize="18" Text="{Binding WorthIt}" Margin="0,0,5,0"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </Border>

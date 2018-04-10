@@ -43,8 +43,7 @@ namespace EFCoreUWP
 
         private void NotWorthIt_Click(object sender, RoutedEventArgs e)
         {
-            //TODO
-            throw new NotImplementedException();
+            _binge.StoreBinge(false);
         }
 
         private void CookieImage_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -71,8 +70,8 @@ namespace EFCoreUWP
 
         private void ClearHistory_Click(object sender, RoutedEventArgs e)
         {
-            //TODO
-            throw new NotImplementedException();
+            BingeService.ClearHistory();
+            ReloadHistory();
         }
     }
 }
