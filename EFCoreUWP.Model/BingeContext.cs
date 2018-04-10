@@ -8,6 +8,14 @@ namespace EFCoreUWP.Model
     // Getting Started with EF Core on Universal Windows Platform (UWP) with a New Database
     // https://docs.microsoft.com/en-us/ef/core/get-started/uwp/getting-started
     //
+    // Microsoft.EntityFrameworkCore
+    // https://www.nuget.org/packages/Microsoft.EntityFrameworkCore/
+    // Install-Package -Id Microsoft.EntityFrameworkCore -ProjectName EFCoreUWP.Model
+    //
+    // Microsoft.EntityFrameworkCore.Sqlite
+    // https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Sqlite/
+    // Install-Package -Id Microsoft.EntityFrameworkCore.Sqlite -ProjectName EFCoreUWP.Model
+    //
     // Add-Migration -Name Initial -Context BingeContext -Project EFCoreUWP.Model -StartupProject EFCoreUWP.Model
     public class BingeContext : DbContext
     {
