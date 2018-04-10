@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Windows.UI.Xaml;
 
 namespace EFCoreUWP
@@ -61,22 +60,37 @@ namespace EFCoreUWP
 
         private void OnPropertyChanged(string property)
         {
-            //TODO
-            throw new NotImplementedException();
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
-        //TODO
+        private void OnBingeCompleted()
+        {
+            BingeCompleted?.Invoke(this);
+        }
+
+        internal void StoreBinge(bool worthIt)
+        {
+            BingeService.RecordBinge(_clickCount, worthIt);
+            StartControlsVisibility = Visibility.Visible;
+            StopControlsVisibility = Visibility.Collapsed;
+            Binging = false;
+            OnBingeCompleted();
+        }
 
         public void StartNewBinge()
         {
-            //TODO
-            throw new NotImplementedException();
+            ClickCount = 0;
+            Binging = true;
+            StartControlsVisibility = Visibility.Collapsed;
+            StopControlsVisibility = Visibility.Visible;
         }
 
         public void HandleClick()
         {
-            //TODO
-            throw new NotImplementedException();
+            if (Binging)
+            {
+                ClickCount += 1;
+            }
         }
     }
 }

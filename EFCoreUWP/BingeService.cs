@@ -9,8 +9,18 @@ namespace EFCoreUWP
     {
         public static void RecordBinge(int count, bool worthIt)
         {
-            //TODO
-            throw new NotImplementedException();
+            var binge = new CookieBinge
+            {
+                HowMany = count,
+                WorthIt = worthIt,
+                TimeOccurred = DateTime.Now,
+            };
+
+            using (var context = new BingeContext())
+            {
+                context.Binges.Add(binge);
+                context.SaveChanges();
+            }
         }
 
         public static IEnumerable<CookieBinge> GetLast5Binges()

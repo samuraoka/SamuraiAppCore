@@ -33,14 +33,12 @@ namespace EFCoreUWP
 
         private void Play_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            //TODO
-            throw new NotImplementedException();
+            _binge.StartNewBinge();
         }
 
         private void WorthIt_Click(object sender, RoutedEventArgs e)
         {
-            //TODO
-            throw new NotImplementedException();
+            _binge.StoreBinge(true);
         }
 
         private void NotWorthIt_Click(object sender, RoutedEventArgs e)
@@ -51,14 +49,24 @@ namespace EFCoreUWP
 
         private void CookieImage_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            //TODO
-            throw new NotImplementedException();
+            if (_binge.Binging)
+            {
+                ((Image)sender).CapturePointer(e.Pointer);
+
+                var pt = e.GetCurrentPoint(BingeGrid);
+                NomText.Margin = new Thickness(pt.Position.X, pt.Position.Y, 0, 0);
+
+                NomText.Visibility = Visibility.Visible;
+                _binge.HandleClick();
+                ReloadHistory();
+            }
         }
 
         private void CookieImage_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            //TODO
-            throw new NotImplementedException();
+            ((Image)sender).ReleasePointerCapture(e.Pointer);
+
+            NomText.Visibility = Visibility.Collapsed;
         }
 
         private void ClearHistory_Click(object sender, RoutedEventArgs e)
