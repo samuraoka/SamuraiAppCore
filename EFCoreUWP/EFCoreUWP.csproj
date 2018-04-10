@@ -107,6 +107,11 @@
     <None Include="EFCoreUWP_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\cookie.png" />
+    <Content Include="Assets\Emoticon_Cool_Blue.png" />
+    <Content Include="Assets\Emoticon_Dead_Orange.png" />
+    <Content Include="Assets\Go.png" />
+    <Content Include="Assets\many cookies.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -127,6 +132,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite">
+      <Version>2.0.2</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.0.8</Version>
     </PackageReference>

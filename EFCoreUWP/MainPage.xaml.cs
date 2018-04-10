@@ -26,5 +26,35 @@ namespace EFCoreUWP
         {
             this.InitializeComponent();
         }
+
+        private void AddCookies_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+
+        }
+
+        private void StopHappy_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void StopGuilt_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void CookieImage_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+
+        }
+
+        private void CookieImage_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+
+        }
+
+        private void ClearHistory_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

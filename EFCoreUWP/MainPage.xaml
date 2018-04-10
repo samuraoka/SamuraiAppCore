@@ -7,7 +7,83 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid x:Name="MainGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="277"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Pivot x:Name="rootPivot" Title="Cookie Binging" Grid.Row="1" Grid.ColumnSpan="2" Margin="0,0,10,0" Grid.RowSpan="2">
+            <PivotItem Header="Game" Margin="12,0,10,3">
+                <Grid x:Name="BingePane" Grid.Column="0" BorderThickness="1" BorderBrush="Black">
+                    <Grid x:Name="BingeGrid" Margin="0,1,1,49">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="67"/>
+                            <RowDefinition/>
+                            <RowDefinition Height="420"/>
+                        </Grid.RowDefinitions>
+                        <Button x:Name="AddCookies" Grid.Row="0" Margin="0,12,0,0" Tapped="AddCookies_Tapped" Visibility="{Binding StartControlsVisibility}" VerticalAlignment="Top" Height="52" Width="52" Padding="4,0" VerticalContentAlignment="Top" Background="{x:Null}">
+                            <Image Source="Assets/Go.png" HorizontalAlignment="Left" Height="52" Margin="-6,-2" VerticalAlignment="Top" Width="52"/>
+                        </Button>
+                        <Button x:Name="StopHappy" Grid.Row="0" Margin="0,12,57,0" FontSize="16" Visibility="{Binding StopControlsVisibility}" Click="StopHappy_Click" Foreground="#FFD00A0A" HorizontalAlignment="Right" Width="52" Height="52" VerticalAlignment="Bottom" Background="{x:Null}" ToolTipService.ToolTip="Stop Binging. I feel so good!">
+                            <Image Source="Assets/Emoticon_Cool_Blue.png" Margin="-10,-6" Height="52" Width="52"/>
+                        </Button>
+                        <Button x:Name="StopGuilt" Margin="0,12,0,0" FontSize="16" Visibility="{Binding StopControlsVisibility}" Click="StopGuilt_Click" Foreground="#FFF1E105" HorizontalAlignment="Right" Width="52" Height="52" Background="{x:Null}" ToolTipService.ToolTip="Stop Binging! I'm gonna explode!">
+                            <Image Source="Assets/Emoticon_Dead_Orange.png" Margin="-10,-6" Width="52" Height="52"/>
+                        </Button>
+                        <StackPanel Grid.Row="2" Margin="16,0,10,0">
+                            <Grid x:Name="ImageGrid" Grid.Row="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="0*"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Image x:Name="CookieImage" Source="Assets/cookie.png" Margin="10,0,10,0" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsTapEnabled="True" PointerPressed="CookieImage_PointerPressed" PointerReleased="CookieImage_PointerReleased" Grid.RowSpan="2"/>
+                            </Grid>
+                            <StackPanel Orientation="Horizontal" Margin="0,10,10,64">
+                                <TextBlock Margin="0,0,10,0" FontSize="30" Text="Cookies Eaten: " Width="198"/>
+                                <TextBlock FontSize="30" x:Name="ClickCount" Text="{Binding ClickCount}" RenderTransformOrigin="0.5,0.5" Width="83"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock x:Name="NomText" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Nom!" FontSize="16" FontWeight="Bold" Foreground="#FFFBFBFB" Height="28" VerticalAlignment="Top" Width="47" Margin="130,112,0,0"/>
+                </Grid>
+            </PivotItem>
+            <PivotItem Header="Scores">
+                <StackPanel x:Name="ScorePane" Grid.Column="1" Background="#FF494646">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0" Width="322" Height="57" VerticalAlignment="Center">
+                        <TextBlock FontSize="20" Text="Your latest Binges" Margin="1,11,1,11.875" Foreground="#FFF9F9F9" Width="254" TextAlignment="Center"/>
+                        <Image Source="assets/many cookies.png" Height="34" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="61"/>
+                    </StackPanel>
+                    <ListView ItemsSource="{Binding .}" Margin="5,10,5,0" x:Name="BingeList" HorizontalContentAlignment="Stretch">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="White" BorderThickness="2" CornerRadius="10" Padding="5" Margin="5,5,5,0">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock FontSize="20" Text="Cookies Consumed: " Margin="0,0,10,0"/>
+                                            <TextBlock FontSize="20" Text="{Binding HowMany}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock FontSize="18" Text="When it Happened: " Margin="0,0,5,0"/>
+                                            <TextBlock FontSize="18" Text="{Binding TimeOccurred}"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock FontSize="18" Text="Worth it?: " Margin="0,0,5,0"/>
+                                            <TextBlock FontSize="18" Text="{Binding WorthIt}" Margin="0,0,5,0"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Button x:Name="ClearHistory" Content="Clear History" Click="ClearHistory_Click" FontSize="16" Background="#33F9F8F8" Foreground="#FFF7F7F7" Width="117" VerticalAlignment="Bottom" Height="31" HorizontalAlignment="Stretch" Margin="0"/>
+                </StackPanel>
+            </PivotItem>
+        </Pivot>
 
     </Grid>
 </Page>
